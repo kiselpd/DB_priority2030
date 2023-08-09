@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/database.dir/main.cpp.o CMakeFiles/database.dir/database/src/connection.cpp.o CMakeFiles/database.dir/database/src/request.cpp.o -o database  -lpqxx 

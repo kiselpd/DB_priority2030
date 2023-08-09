@@ -1,0 +1,3 @@
+/home/kiselpd/Документы/kpd_projects/c++/try_db/build/CMakeFiles/database.dir
+/home/kiselpd/Документы/kpd_projects/c++/try_db/build/CMakeFiles/edit_cache.dir
+/home/kiselpd/Документы/kpd_projects/c++/try_db/build/CMakeFiles/rebuild_cache.dir
