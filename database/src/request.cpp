@@ -17,5 +17,6 @@ std::string AuthorizationSelectRequest::createSelectRequest() const{
         "SELECT * "
         "FROM user_data "
         "WHERE (user_login='%1%' OR user_email='%1%') AND user_password='%2%'") % this->username_ % this->password_;
+    
     return request.str();
 };
