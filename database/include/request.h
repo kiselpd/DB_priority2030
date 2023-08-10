@@ -1,5 +1,5 @@
-#ifndef REQUEST_TO_DB
-#define REQUEST_TO_DB
+#ifndef REQUEST
+#define REQUEST
 
 #include<iostream>
 
@@ -45,4 +45,4 @@ public:
     std::string createSelectRequest() const override;
 };
 
-#endif /*REQUEST_TO_DB*/
+#endif /*REQUEST*/

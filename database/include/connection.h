@@ -1,5 +1,5 @@
-#ifndef CONNECTION_TO_DB
-#define CONNECTION_TO_DB
+#ifndef CONNECTION
+#define CONNECTION
 
 #include <pqxx/pqxx> 
 #include "request.h"
@@ -11,10 +11,10 @@ const std::string DEFAULT_DBPASSWORD = "qwerty";
 const std::string DEFAULT_DBNAME = "Priority2030";
 
 
-struct DBConnectionInfo
+struct DBConnectionOption
 {
-    DBConnectionInfo();
-    DBConnectionInfo(const std::string& host, const std::string& port,
+    DBConnectionOption();
+    DBConnectionOption(const std::string& host, const std::string& port,
         const std::string& user, const std::string& password, const std::string& name);
 
     std::string getConnectionInfo() const;
@@ -30,7 +30,8 @@ struct DBConnectionInfo
 class DBConnection
 {
 public:
-    size_t connect(const DBConnectionInfo& db_info);
+    ~DBConnection();
+    size_t connect(const DBConnectionOption& db_info);
     size_t disconnect();
     bool isActive() const;
 
@@ -41,4 +42,4 @@ private:
     std::shared_ptr<pqxx::connection> connection_;
 };
 
-#endif /*CONNECTION_TO_DB*/
+#endif /*CONNECTION*/
