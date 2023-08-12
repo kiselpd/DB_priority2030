@@ -1,5 +1,5 @@
-#ifndef CONNECTION
-#define CONNECTION
+#ifndef CONNECTION_H
+#define CONNECTION_H
 
 #include <pqxx/pqxx> 
 #include "request.h"
@@ -42,4 +42,4 @@ private:
     std::shared_ptr<pqxx::connection> connection_;
 };
 
-#endif /*CONNECTION*/
+#endif /*CONNECTION_H*/

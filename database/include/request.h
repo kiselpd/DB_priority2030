@@ -1,5 +1,5 @@
-#ifndef REQUEST
-#define REQUEST
+#ifndef REQUEST_H
+#define REQUEST_H
 
 #include<iostream>
 
@@ -45,4 +45,4 @@ public:
     std::string createSelectRequest() const override;
 };
 
-#endif /*REQUEST*/
+#endif /*REQUEST_H*/

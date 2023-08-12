@@ -1,25 +1,31 @@
 #include "connection_pool.h"
 
 // DBConnectionPool
-void DBConnectionPool::setOption(const DBConnectionOption& db_option){
-    this->db_option_ = db_option;
-};
-
-size_t DBConnectionPool::createPool(const size_t& pool_size = DEFAULT_POOL_SIZE){
+size_t DBConnectionPool::createPool(const DBConnectionOption& db_option, const size_t& pool_size = DEFAULT_POOL_SIZE){
     for (size_t i = 0; i < pool_size; i++){
-        std::shared_ptr<DBConnection> conn;
-        auto error = conn->connect(this->db_option_);
-        if(!error)
-            this->pool_.emplace(conn);
-        else
+        auto error = this->addConnection();
+        if(error)
             return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
 };
 
-size_t DBConnectionPool::getSize() const{
+void DBConnectionPool::clearPool(){
+    while (this->connection_count_)
+        this->deleteConnection();
+};
+
+size_t DBConnectionPool::getAllCount() const{
+    return this->connection_count_;
+};
+
+size_t DBConnectionPool::getFreeCount() const{
     std::lock_guard locker(this->m_mutex_);
     return this->pool_.size();
+};
+
+DBConnectionOption DBConnectionPool::getOption() const{
+    return this->option_;
 };
 
 std::shared_ptr<DBConnection> DBConnectionPool::getFreeConnection(){
@@ -39,4 +45,23 @@ void DBConnectionPool::setFreeConnection(std::shared_ptr<DBConnection> free_conn
     this->pool_.push(free_connection);
     locker.unlock();
     m_condition_.notify_one();
+};
+
+size_t DBConnectionPool::deleteConnection(){
+    if(this->connection_count_){
+        this->getFreeConnection();
+        this->connection_count_--;
+        return EXIT_SUCCESS;
+    }
+    return EXIT_FAILURE;
+};
+
+size_t DBConnectionPool::addConnection(){
+    auto new_conn = std::make_shared<DBConnection>();
+    auto error = new_conn->connect(this->option_);
+    if(!error){
+        this->setFreeConnection(new_conn);
+        this->connection_count_++;
+    }
+    return error;
 };
