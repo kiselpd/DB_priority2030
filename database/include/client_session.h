@@ -4,8 +4,6 @@
 #include "boost/asio.hpp"
 #include<vector>
 
-const size_t BUFFER_SIZE = 1024;
-
 class ClientSession
 {
 public:
@@ -25,10 +23,11 @@ private:
     void write_handler_(const boost::system::error_code& error, std::size_t bytes_transferred);
 
     boost::asio::ip::tcp::socket socket_;
-    char buffer_[1024];
+    std::vector<char> buffer_;
+    const size_t buffer_size_ = 1024;
     // DBHandler
 };
 
-std::string get_string_from_streambuf(boost::asio::streambuf& buffer);
+std::string get_string_from_vector(const std::vector<char>& buffer);
 
 #endif /*CLIENT_SESSION_H*/

@@ -1,8 +1,10 @@
 #include "client_session.h"
+#include "boost/asio/buffer.hpp"
 #include <iostream>
 
 // ClientSession
-ClientSession::ClientSession(boost::asio::io_service& io_service) : socket_(io_service){};
+ClientSession::ClientSession(boost::asio::io_service& io_service) : socket_(io_service){
+};
 
 ClientSession::~ClientSession(){
     this->stop();
@@ -25,22 +27,22 @@ void ClientSession::do_read_(){
     auto handler = [this](const boost::system::error_code& error, std::size_t bytes_transferred) {
         this->read_handler_(error, bytes_transferred);
     };
-
+    buffer_.resize(this->buffer_size_);
     this->socket_.async_read_some(
-        boost::asio::buffer(this->buffer_),
+        boost::asio::buffer(buffer_),
         handler
     );
 };
 
 void ClientSession::read_handler_(const boost::system::error_code& error, size_t bytes_transferred){
     if(!error){
-        // std::string request = get_string_from_streambuf(this->buffer_);
-
-        std::cout << buffer_ << std::endl;
-        std::string answer = "GOOD!"; //костыль доделать
+        
+        auto request = get_string_from_vector(this->buffer_);
+        std::cout << request << std::endl;//!!!!!
+        std::string answer("GOOD " + request);//!!!!!!
+        buffer_.clear();
         this->do_write_(answer);
     }
-
     //обработать ошибку
 };
 
@@ -62,9 +64,7 @@ void ClientSession::write_handler_(const boost::system::error_code& error, std::
     //обработать ошибку
 };
 
-std::string get_string_from_streambuf(boost::asio::streambuf& buffer){
-    std::ostringstream stream_buffer;
-	stream_buffer<<&buffer;
-    std::string new_str = stream_buffer.str();
+std::string get_string_from_vector(const std::vector<char>& buffer){
+    std::string new_str(buffer.begin(), buffer.end());
     return new_str;
 };
