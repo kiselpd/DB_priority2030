@@ -15,7 +15,7 @@ public:
     void clearPool();
 
     size_t getAllCount() const;
-    size_t getFreeCount() const;
+    size_t getFreeCount();
     DBConnectionOption getOption() const;
 
     std::shared_ptr<DBConnection> getFreeConnection();

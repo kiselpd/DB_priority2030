@@ -8,9 +8,13 @@ include_directories(database/include)			# Расположение заголо�
 
 set(SOURCE_FILES
         main.cpp
+        database/src/client_acceptor.cpp
+        database/src/client_session.cpp
+        database/src/connection_pool.cpp
         database/src/connection.cpp
+        database/src/db_manager.cpp
         database/src/request.cpp
         )
  
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} pqxx)
+target_link_libraries(${PROJECT_NAME} pqxx pthread)

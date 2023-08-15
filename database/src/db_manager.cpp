@@ -14,7 +14,7 @@ size_t DBManager::clearConnectionPool(){
     return (conn_pool_->getAllCount()) ? (1) : (0);
 };
 
-size_t DBManager::addConnection(const size_t& conn_number = 1){
+size_t DBManager::addConnection(const size_t& conn_number){
     for (size_t i = 0; i < conn_number; i++){
         auto error = conn_pool_->addConnection();
         if(error)
@@ -23,7 +23,7 @@ size_t DBManager::addConnection(const size_t& conn_number = 1){
     return EXIT_SUCCESS;
 };
 
-size_t DBManager::deleteConnection(const size_t& conn_number = 1){
+size_t DBManager::deleteConnection(const size_t& conn_number){
     for (size_t i = 0; i < conn_number; i++){
         auto error = conn_pool_->deleteConnection();
         if(error)

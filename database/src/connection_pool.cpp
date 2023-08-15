@@ -1,7 +1,7 @@
 #include "connection_pool.h"
 
 // DBConnectionPool
-size_t DBConnectionPool::createPool(const DBConnectionOption& db_option, const size_t& pool_size = DEFAULT_POOL_SIZE){
+size_t DBConnectionPool::createPool(const DBConnectionOption& db_option, const size_t& pool_size){
     for (size_t i = 0; i < pool_size; i++){
         auto error = this->addConnection();
         if(error)
@@ -19,8 +19,8 @@ size_t DBConnectionPool::getAllCount() const{
     return this->connection_count_;
 };
 
-size_t DBConnectionPool::getFreeCount() const{
-    std::lock_guard locker(this->m_mutex_);
+size_t DBConnectionPool::getFreeCount(){
+    std::lock_guard<std::mutex> locker(this->m_mutex_);
     return this->pool_.size();
 };
 

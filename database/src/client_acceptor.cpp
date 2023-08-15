@@ -1,9 +1,13 @@
 #include "client_acceptor.h"
 #include "client_session.h"
 
+#include "boost/bind.hpp"
+#include <iostream>
+
 // ClientAcceptor
-ClientAcceptor::ClientAcceptor(const short& port) : 
-    acceptor_(this->io_service_, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)), socket_(this->io_service_) {};
+ClientAcceptor::ClientAcceptor(boost::asio::io_service &io_service, const short& port) : 
+    io_service_(io_service),
+    acceptor_(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)){};
 
 ClientAcceptor::~ClientAcceptor(){
     this->stop();
@@ -12,29 +16,26 @@ ClientAcceptor::~ClientAcceptor(){
 
 void ClientAcceptor::start(){
     this->do_accept_();
-    this->io_service_.run();
+    io_service_.run();
 };
 
 void ClientAcceptor::stop(){
     this->acceptor_.close();
-    this->io_service_.stop();
 };
 
 void ClientAcceptor::do_accept_(){
-    auto handler = [this](const boost::system::error_code& error) {
-        this->accept_handler_(error);
-    };
-
+    ClientSession* new_session = new ClientSession(this->io_service_);
+    
     this->acceptor_.async_accept(
-        this->socket_,
-        handler);
+        new_session->getSocket(),
+        boost::bind(&ClientAcceptor::accept_handler_, this, new_session, boost::asio::placeholders::error));
 };
 
-void ClientAcceptor::accept_handler_(const boost::system::error_code& error){
-    if(!error){
-        auto new_session = std::make_shared<ClientSession>(std::move(this->socket_));
+void ClientAcceptor::accept_handler_(ClientSession* new_session, const boost::system::error_code& error){
+    if(!error)
         new_session->start();
-    }
+    else
+        delete new_session;
     
     this->do_accept_();
 };
