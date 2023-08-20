@@ -2,7 +2,8 @@
 #define CLIENT_SESSION_H
 
 #include "boost/asio.hpp"
-#include<vector>
+#include <vector>
+#include "db_backend.h"
 
 class ClientSession
 {
@@ -12,7 +13,7 @@ public:
 
     boost::asio::ip::tcp::socket& getSocket();
 
-    void start();
+    void start(std::shared_ptr<DBBackend> db);
     void stop();
 
 private:
@@ -24,8 +25,9 @@ private:
 
     boost::asio::ip::tcp::socket socket_;
     std::vector<char> buffer_;
-    const size_t buffer_size_ = 1024;
-    // DBHandler
+    const size_t buffer_size_ = 1024;  
+
+    std::shared_ptr<DBBackend> db_;
 };
 
 std::string get_string_from_vector(const std::vector<char>& buffer);

@@ -3,11 +3,12 @@
 
 #include "boost/asio.hpp"
 #include "client_session.h"
+#include "db_backend.h"
 
 class ClientAcceptor
 {
 public:
-    ClientAcceptor(boost::asio::io_service& io_service, const short& port);
+    ClientAcceptor(std::shared_ptr<DBBackend> backend, boost::asio::io_service& io_service, const short& port);
     ~ClientAcceptor();
 
     void start();
@@ -18,6 +19,7 @@ private:
 
     boost::asio::io_service& io_service_;
     boost::asio::ip::tcp::acceptor acceptor_;
+    std::shared_ptr<DBBackend> backend_;
 };
 
 #endif /*CLIENT_ACCEPTOR_H*/

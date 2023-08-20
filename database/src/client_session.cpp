@@ -15,7 +15,8 @@ boost::asio::ip::tcp::socket& ClientSession::getSocket(){
     return socket_;
 };
 
-void ClientSession::start(){
+void ClientSession::start(std::shared_ptr<DBBackend> db){
+    db_ = db;
     this->do_read_();
 };
 
@@ -27,6 +28,7 @@ void ClientSession::do_read_(){
     auto handler = [this](const boost::system::error_code& error, std::size_t bytes_transferred) {
         this->read_handler_(error, bytes_transferred);
     };
+    buffer_.clear();
     buffer_.resize(this->buffer_size_);
     this->socket_.async_read_some(
         boost::asio::buffer(buffer_),
@@ -36,11 +38,8 @@ void ClientSession::do_read_(){
 
 void ClientSession::read_handler_(const boost::system::error_code& error, size_t bytes_transferred){
     if(!error){
-        
-        auto request = get_string_from_vector(this->buffer_);
-        std::cout << request << std::endl;//!!!!!
-        std::string answer("GOOD " + request);//!!!!!!
-        buffer_.clear();
+        std::cout << get_string_from_vector(this->buffer_);
+        auto answer = db_->doRequest(get_string_from_vector(this->buffer_));
         this->do_write_(answer);
     }
     //обработать ошибку

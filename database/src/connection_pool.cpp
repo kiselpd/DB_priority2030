@@ -2,6 +2,7 @@
 
 // DBConnectionPool
 size_t DBConnectionPool::createPool(const DBConnectionOption& db_option, const size_t& pool_size){
+    option_ = db_option;
     for (size_t i = 0; i < pool_size; i++){
         auto error = this->addConnection();
         if(error)
@@ -57,7 +58,7 @@ size_t DBConnectionPool::deleteConnection(){
 };
 
 size_t DBConnectionPool::addConnection(){
-    auto new_conn = std::make_shared<DBConnection>();
+    std::shared_ptr<DBConnection> new_conn = std::make_shared<DBConnection>();
     auto error = new_conn->connect(this->option_);
     if(!error){
         this->setFreeConnection(new_conn);

@@ -1,7 +1,7 @@
 #include "db_manager.h"
 
 // DBManager
-size_t DBManager::createConnectionPool(const DBConnectionOption& option, const size_t& connection_count){
+size_t DBManager::connect(const DBConnectionOption& option, const size_t& connection_count){
     auto new_conn_pool = std::make_shared<DBConnectionPool>();
     auto error = new_conn_pool->createPool(option, connection_count);
     if(!error)
@@ -44,9 +44,9 @@ DBConnectionOption DBManager::getConnectionOption() const{
     return conn_pool_->getOption();
 };
 
-pqxx::result DBManager::doRequest(std::shared_ptr<BaseDBRequest> request){
-    auto free_conn = conn_pool_->getFreeConnection();
-    auto result = free_conn->doRequest(request);
-    conn_pool_->setFreeConnection(free_conn);
-    return result;
-};
+// pqxx::result DBManager::doRequest(std::shared_ptr<BaseDBRequest> request){
+//     auto free_conn = conn_pool_->getFreeConnection();
+//     auto result = free_conn->doRequest(request);
+//     conn_pool_->setFreeConnection(free_conn);
+//     return result;
+// };

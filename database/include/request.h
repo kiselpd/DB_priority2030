@@ -3,6 +3,24 @@
 
 #include<iostream>
 
+class RequestTitle
+{
+public:
+    RequestTitle(const size_t& id, const std::string& method, const std::string& time);
+    void set(const size_t& id, const std::string& method, const std::string& time);
+
+    std::string method() const;
+    size_t id() const;
+    std::string role() const;
+    std::string time() const;
+
+private:
+    std::string method_;
+    size_t id_;
+    std::string role_;
+    std::string time_;
+};
+
 class BaseDBRequest{
 public:
     virtual std::string createRequest() const = 0;

@@ -12,8 +12,8 @@ set(SOURCE_FILES
         database/src/client_session.cpp
         database/src/connection_pool.cpp
         database/src/connection.cpp
-        database/src/db_manager.cpp
-        database/src/request.cpp
+        database/src/db_backend.cpp
+        database/src/client_parser.cpp
         )
  
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

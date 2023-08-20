@@ -2,7 +2,7 @@
 #define CONNECTION_H
 
 #include <pqxx/pqxx> 
-#include "request.h"
+#include "client_parser.h"
 
 const std::string DEFAULT_DBHOST = "127.0.0.1";
 const std::string DEFAULT_DBPORT = "5432";
@@ -36,7 +36,7 @@ public:
     bool isActive() const;
 
     std::shared_ptr<pqxx::connection> getConnection() const;
-    pqxx::result doRequest(std::shared_ptr<BaseDBRequest> request);
+    pqxx::result doRequest(std::shared_ptr<BaseRequestBody> request);
     
 private:
     std::shared_ptr<pqxx::connection> connection_;

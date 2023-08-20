@@ -6,7 +6,8 @@
 class DBManager
 {
 public:
-    size_t createConnectionPool(const DBConnectionOption& option, const size_t& connection_count);
+    DBManager();
+    size_t connect(const DBConnectionOption& option, const size_t& connection_count);
     size_t clearConnectionPool();
 
     size_t addConnection(const size_t& conn_number = 1);

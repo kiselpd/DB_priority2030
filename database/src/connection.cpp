@@ -46,19 +46,19 @@ size_t DBConnection::disconnect(){
 };
 
 bool DBConnection::isActive() const{
-    return connection_->is_open();
+    return (connection_) ? (connection_->is_open()) : (false);
 };
 
 std::shared_ptr<pqxx::connection> DBConnection::getConnection() const{
     return connection_;
 };
 
-pqxx::result DBConnection::doRequest(std::shared_ptr<BaseDBRequest> request){
+pqxx::result DBConnection::doRequest(std::shared_ptr<BaseRequestBody> request){
     pqxx::result result;
 
     try{
         pqxx::work transaction{*connection_};
-        pqxx::result result = transaction.exec(request->createRequest());
+        result = transaction.exec(request->createRequest());
         transaction.commit();
     }
     catch(const std::exception& e){
