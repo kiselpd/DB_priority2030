@@ -2,6 +2,7 @@
 #include "boost/asio/buffer.hpp"
 #include <iostream>
 #include "json_builder.h"
+#include "answer.h"
 
 // ClientSession
 ClientSession::ClientSession(boost::asio::io_service& io_service) : socket_(io_service){
@@ -42,18 +43,24 @@ void ClientSession::read_handler_(const boost::system::error_code& error, size_t
         JsonDirector director;
         std::string str_request = get_string_from_vector(this->buffer_);
         std::shared_ptr<BaseBuilder> builder;
-        std::shared_ptr<BaseBuilder> builder = std::make_shared<BuilderUpdateRequest>(get_string_from_vector(buffer_));
-        director.setBuilder(builder);
+        
+        std::string type = getType(str_request);
+        std::string body = getBody(str_request);
+
+        if(type == "GET")
+            builder = std::make_shared<BuilderSelectRequest>(body);
+        if(type == "POST")
+            builder = std::make_shared<BuilderUpdateRequest>(body);
+        if(type == "PUT")
+            builder = std::make_shared<BuilderInsertRequest>(body);
+        if(type == "DELETE")
+            builder = std::make_shared<BuilderDeleteRequest>(body);
+  
         auto request = director.getRequest();
         auto result = db_->doRequest(request);
-
-        for(auto row : result){
-            for(auto item : row){
-                std::cout << item.c_str() <<  " ";
-            }
-            std::cout << std::endl;
-        }
-        do_write_("GOOD!");
+        Answer answer(result);
+        
+        do_write_(answer.getAnswer());
     }
     else
         int a;

@@ -83,6 +83,13 @@ std::shared_ptr<DBBaseRequest> BuilderUpdateRequest::build(){
     return db_request;
 };
 
+// BuilderDeleteRequest
+BuilderDeleteRequest::BuilderDeleteRequest(const std::string& request) : str_request_(request){};
+
+std::shared_ptr<DBBaseRequest> BuilderDeleteRequest::build(){
+
+};
+
 // JsonDirector
 std::shared_ptr<DBBaseRequest> JsonDirector::getRequest(){
     std::shared_ptr<DBBaseRequest> request;
@@ -95,14 +102,17 @@ void JsonDirector::setBuilder(std::shared_ptr<BaseBuilder> builder){
     builder_ = builder;
 };
 
-// BuilderAnswer
-BuilderAnswer::BuilderAnswer(pqxx::result answer) : answer_(answer){};
 
-std::shared_ptr<DBBaseRequest> BuilderAnswer::build(){
-    nlohmann::json json_answer;
-    for(auto row : answer_){
-        for(auto item : row){
-            std::cout << item.c_str() <<  " ";
-        }
-    }
+std::string getType(const std::string& request){
+    std::string header;
+    nlohmann::json json_request = nlohmann::json::parse(request);
+    return json_request["header"]["type"];
+};
+
+std::string getBody(const std::string& request){
+    nlohmann::json body;
+    nlohmann::json json_request = nlohmann::json::parse(request);
+    if(json_request.contains("body"))
+        body = json_request["body"];
+    return body.dump();
 };

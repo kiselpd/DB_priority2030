@@ -16,6 +16,7 @@ set(SOURCE_FILES
         database/src/client_parser.cpp
         database/src/json_builder.cpp
         database/src/request.cpp
+        database/src/answer.cpp
         )
  
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
