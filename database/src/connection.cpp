@@ -4,65 +4,54 @@
 #include <iostream>
 
 // DBConnectionOption
-DBConnectionOption::DBConnectionOption() :
-    db_host(DEFAULT_DBHOST), db_port(DEFAULT_DBPORT), db_user(DEFAULT_DBUSER), db_password(DEFAULT_DBPASSWORD), db_name(DEFAULT_DBNAME){};
-
 DBConnectionOption::DBConnectionOption(const std::string& host, const std::string& port, const std::string& user, const std::string& password, const std::string& name) :
-        db_host(host), db_port(port), db_user(user), db_password(password), db_name(name){};
+        _host(host), _port(port), _user(user), _password(password), _name(name){};
 
 std::string DBConnectionOption::getConnectionInfo() const{
     auto connection_info = boost::format("user=%1% host=%2% port=%3% password=%4% dbname=%5%")
-        % db_user % db_host % db_port % db_password % db_name;
+        % _user % _host % _port % _password % _name;
     
     return connection_info.str();
 };
 
 // DBConnection
-DBConnection::~DBConnection(){
-    if(this->isActive())
-        this->disconnect();
-};
-
-size_t DBConnection::connect(const DBConnectionOption& db_info){
+size_t DBConnection::connect(const DBConnectionOption& connection_option){
     try{
-        connection_ = std::shared_ptr<pqxx::connection>(new pqxx::connection(db_info.getConnectionInfo()));
+        connection_ = std::shared_ptr<pqxx::connection>(new pqxx::connection(connection_option.getConnectionInfo()));
+        option_ = connection_option;
+        return EXIT_SUCCESS;
     }
     catch(const std::exception& e){
-        std::cerr << e.what() << '\n';
+        std::cerr << "Connection is failed!" << std::endl;
         return EXIT_FAILURE;
     }
-    return EXIT_SUCCESS;
 };
 
 size_t DBConnection::disconnect(){
     try{
         connection_->disconnect();
+        return EXIT_SUCCESS;
     }
     catch(const std::exception& e){
-        std::cerr << e.what() << '\n';
+        std::cerr << "Connection is already closed!" << std::endl;
         return EXIT_FAILURE;
     }
-    return EXIT_SUCCESS;
 };
 
-bool DBConnection::isActive() const{
-    return (connection_) ? (connection_->is_open()) : (false);
-};
+std::shared_ptr<pqxx::connection> DBConnection::getConnection(){return connection_;};
 
-std::shared_ptr<pqxx::connection> DBConnection::getConnection() const{
-    return connection_;
-};
+DBConnectionOption DBConnection::getOption() const{return option_;};
 
-pqxx::result DBConnection::doRequest(std::shared_ptr<BaseRequestBody> request){
+pqxx::result DBConnection::doRequest(const std::string& request){
     pqxx::result result;
-
     try{
         pqxx::work transaction{*connection_};
-        result = transaction.exec(request->createRequest());
+        result = transaction.exec(request);
         transaction.commit();
     }
     catch(const std::exception& e){
-        std::cerr << e.what() << '\n';
+        std::cerr << "Request cannot be executed!" << std::endl;
+        std::cerr << e.what() << std::endl;
     }
     
     return result;

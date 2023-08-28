@@ -2,8 +2,9 @@
 #define CLIENT_SESSION_H
 
 #include "boost/asio.hpp"
-#include <vector>
 #include "db_backend.h"
+
+#include <vector>
 
 class ClientSession
 {

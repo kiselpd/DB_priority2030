@@ -1,6 +1,7 @@
 #include "client_session.h"
 #include "boost/asio/buffer.hpp"
 #include <iostream>
+#include "json_builder.h"
 
 // ClientSession
 ClientSession::ClientSession(boost::asio::io_service& io_service) : socket_(io_service){
@@ -38,11 +39,27 @@ void ClientSession::do_read_(){
 
 void ClientSession::read_handler_(const boost::system::error_code& error, size_t bytes_transferred){
     if(!error){
-        std::cout << get_string_from_vector(this->buffer_);
-        auto answer = db_->doRequest(get_string_from_vector(this->buffer_));
-        this->do_write_(answer);
+        JsonDirector director;
+        std::string str_request = get_string_from_vector(this->buffer_);
+        std::shared_ptr<BaseBuilder> builder;
+        std::shared_ptr<BaseBuilder> builder = std::make_shared<BuilderUpdateRequest>(get_string_from_vector(buffer_));
+        director.setBuilder(builder);
+        auto request = director.getRequest();
+        auto result = db_->doRequest(request);
+
+        for(auto row : result){
+            for(auto item : row){
+                std::cout << item.c_str() <<  " ";
+            }
+            std::cout << std::endl;
+        }
+        do_write_("GOOD!");
     }
-    //обработать ошибку
+    else
+        int a;
+        // delete this;
+    
+    
 };
 
 void ClientSession::do_write_(const std::string& buffer){

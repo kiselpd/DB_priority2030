@@ -3,64 +3,42 @@
 
 #include<iostream>
 
-class RequestTitle
-{
-public:
-    RequestTitle(const size_t& id, const std::string& method, const std::string& time);
-    void set(const size_t& id, const std::string& method, const std::string& time);
-
-    std::string method() const;
-    size_t id() const;
-    std::string role() const;
-    std::string time() const;
-
-private:
-    std::string method_;
-    size_t id_;
-    std::string role_;
-    std::string time_;
-};
-
-class BaseDBRequest{
+class DBBaseRequest{
 public:
     virtual std::string createRequest() const = 0;
 };
 
 
-class BaseSelectRequest : public BaseDBRequest{
+class DBSelectRequest : public DBBaseRequest
+{
 public:
-    BaseSelectRequest(){};
-    BaseSelectRequest(const long int& id);
+    std::string _source;
+    std::string _target;
+    std::string _option;
+    size_t _limit = 0;
+
     std::string createRequest() const override;
-    virtual std::string createSelectRequest() const = 0;
-
-private:
-    long int id_;
 };
 
 
-class AuthorizationSelectRequest : public BaseSelectRequest{
+class DBInsertRequest : public DBBaseRequest
+{
 public:
-    AuthorizationSelectRequest(const std::string& username, const std::string& password);
-    std::string createSelectRequest() const override;
+    std::string _source;
+    std::string _target;
+    std::string _value;
 
-private:
-    std::string username_;
-    std::string password_;
+    std::string createRequest() const override;
 };
 
-
-class ConsumersSelectRequest : public BaseSelectRequest{
+class DBUpdateRequest : public DBBaseRequest
+{
 public:
-    ConsumersSelectRequest(const long int& user_id);
-    std::string createSelectRequest() const override;
-};
+    std::string _source;
+    std::string _target;
+    std::string _option;
 
-
-class EnergySelectRequest : public BaseSelectRequest{
-public:
-    EnergySelectRequest(const long int& user_id);
-    std::string createSelectRequest() const override;
+    std::string createRequest() const override;
 };
 
 #endif /*REQUEST_H*/

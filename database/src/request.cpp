@@ -1,22 +1,55 @@
 #include "request.h"
 #include <boost/format.hpp>
 
-// BaseSelectRequest
-BaseSelectRequest::BaseSelectRequest(const long int& id) : id_(id) {};
+// DBSelectRequest
+std::string DBSelectRequest::createRequest() const{
+    std::string str_request;
+    if(!_source.empty()){
+        auto request = boost::format(
+        "SELECT %1% "
+        "FROM %2%") % (!_target.empty() ? _target : "*") % _source;
 
-std::string BaseSelectRequest::createRequest() const{
-    return this->createSelectRequest();
+        str_request = request.str();
+        if(!_option.empty())
+            str_request += " WHERE " + _option;
+        
+        if(_limit)
+            str_request += " LIMIT " + std::to_string(_limit);
+
+        str_request += ";";
+    }
+    return str_request;
 };
 
-// AuthorizationSelectRequest
-AuthorizationSelectRequest::AuthorizationSelectRequest(const std::string& username, const std::string& password) : 
-    username_(username), password_(password) {};
+// DBInsertRequest
+std::string DBInsertRequest::createRequest() const{
+    std::string str_request;
+    if(!_source.empty() && !_target.empty() && !_value.empty()){
+        auto request = boost::format(
+        "INSERT INTO %1%(%2%) "
+        "VALUES %3% "
+        "RETURNING *") % _source % _target % _value;
 
-std::string AuthorizationSelectRequest::createSelectRequest() const{
-    auto request = boost::format(
-        "SELECT * "
-        "FROM user_data "
-        "WHERE (user_login='%1%' OR user_email='%1%') AND user_password='%2%'") % this->username_ % this->password_;
-    
-    return request.str();
+        str_request = request.str();
+    }
+    return str_request;
+};
+
+// DBUpdateRequest
+std::string DBUpdateRequest::createRequest() const{
+    std::string str_request;
+    if(!_source.empty() && !_target.empty()){
+        auto request = boost::format(
+        "UPDATE %1% "
+        "SET %2%") % _source % _target;
+
+        str_request = request.str();
+        if(!_option.empty())
+            str_request += " WHERE " + _option;
+
+
+        str_request+=" RETURNING * ;";
+
+    }
+    return str_request;
 };
