@@ -1,5 +1,4 @@
-#include "client_session.h"
-#include "boost/asio/buffer.hpp"
+#include "session.h"
 #include <iostream>
 #include "json_builder.h"
 #include "answer.h"
@@ -40,7 +39,6 @@ void ClientSession::do_read_(){
 
 void ClientSession::read_handler_(const boost::system::error_code& error, size_t bytes_transferred){
     if(!error){
-        JsonDirector director;
         std::string str_request = get_string_from_vector(this->buffer_);
         std::shared_ptr<BaseBuilder> builder;
         
@@ -55,8 +53,8 @@ void ClientSession::read_handler_(const boost::system::error_code& error, size_t
             builder = std::make_shared<BuilderInsertRequest>(body);
         if(type == "DELETE")
             builder = std::make_shared<BuilderDeleteRequest>(body);
-  
-        auto request = director.getRequest();
+
+        auto request = builder->build();
         auto result = db_->doRequest(request);
         Answer answer(result);
         

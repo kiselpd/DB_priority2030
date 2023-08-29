@@ -56,17 +56,6 @@ private:
 };
 
 
-class JsonDirector
-{
-public:
-    std::shared_ptr<DBBaseRequest> getRequest();
-    void setBuilder(std::shared_ptr<BaseBuilder> builder);
-
-private:
-    std::shared_ptr<BaseBuilder> builder_;
-};
-
-
 std::string getBody(const std::string& request);
 std::string getType(const std::string& request);
 

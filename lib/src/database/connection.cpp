@@ -18,7 +18,6 @@ std::string DBConnectionOption::getConnectionInfo() const{
 size_t DBConnection::connect(const DBConnectionOption& connection_option){
     try{
         connection_ = std::shared_ptr<pqxx::connection>(new pqxx::connection(connection_option.getConnectionInfo()));
-        option_ = connection_option;
         return EXIT_SUCCESS;
     }
     catch(const std::exception& e){
@@ -38,9 +37,7 @@ size_t DBConnection::disconnect(){
     }
 };
 
-std::shared_ptr<pqxx::connection> DBConnection::getConnection(){return connection_;};
-
-DBConnectionOption DBConnection::getOption() const{return option_;};
+std::shared_ptr<pqxx::connection> DBConnection::getConnection(){return connection_;};;
 
 pqxx::result DBConnection::doRequest(const std::string& request){
     pqxx::result result;

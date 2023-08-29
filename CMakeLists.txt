@@ -1,23 +1,16 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.16)
 
-project(database)		
+project(psql_server)	
 
-set(SOURCE_EXE main.cpp)			# Установка переменной со списком исходников
+set(SOURCE_EXE main.cpp)	
 
-include_directories(database/include)			# Расположение заголовочных файлов
+set(CMAKE_CXX_STANDARD 17)
 
-set(SOURCE_FILES
-        main.cpp
-        database/src/client_acceptor.cpp
-        database/src/client_session.cpp
-        database/src/connection_pool.cpp
-        database/src/connection.cpp
-        database/src/db_backend.cpp
-        database/src/client_parser.cpp
-        database/src/json_builder.cpp
-        database/src/request.cpp
-        database/src/answer.cpp
-        )
- 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} pqxx pthread)
+add_subdirectory(lib)
+add_executable(${PROJECT_NAME} ${SOURCE_EXE})
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${CORE_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CORE_LIBRARIES})
+
+add_definitions("-DBOOST_ALLOW_DEPRECATED_HEADERS")
+add_definitions("-DBOOST_BIND_GLOBAL_PLACEHOLDERS")

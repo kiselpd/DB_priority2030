@@ -1,12 +1,11 @@
-#include "db_backend.h"
+#include "backend.h"
 
 // DBBackend
 DBBackend::DBBackend(std::shared_ptr<DBConnectionPool> pool){
     pool_ = pool;
 };
 
-pqxx::result DBBackend::doRequest(std::shared_ptr<DBBaseRequest> request){
-    request_parser::error error;    
+pqxx::result DBBackend::doRequest(std::shared_ptr<DBBaseRequest> request){   
     pqxx::result answer;
     auto free_conn = pool_->getFreeConnection();
     if(free_conn){

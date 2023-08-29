@@ -1,0 +1,11 @@
+{
+    "header":
+    {
+        "type":"DELETE"
+    },
+    "body":
+    {
+        "source":"user_data",
+        "option":"'id'=1"
+    }
+}

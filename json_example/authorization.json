@@ -1,7 +1,0 @@
-
-{
-    "title":
-    {
-        "time" : "время запроса",
-        "type" : "тип запроса",
-        "token" : "токен"},"body": {"login" : "priority2030","password" : "12345"}}

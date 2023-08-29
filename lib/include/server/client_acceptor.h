@@ -2,8 +2,8 @@
 #define CLIENT_ACCEPTOR_H
 
 #include "boost/asio.hpp"
-#include "client_session.h"
-#include "db_backend.h"
+#include "session.h"
+#include "backend.h"
 
 class ClientAcceptor
 {

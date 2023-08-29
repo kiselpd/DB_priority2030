@@ -1,7 +1,5 @@
 #include "client_acceptor.h"
-#include "client_session.h"
-
-#include "boost/bind.hpp"
+#include "boost/bind/bind.hpp"
 #include <iostream>
 
 // ClientAcceptor

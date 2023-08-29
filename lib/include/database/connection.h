@@ -2,7 +2,6 @@
 #define CONNECTION_H
 
 #include <pqxx/pqxx> 
-#include "client_parser.h"
 
 struct DBConnectionOption
 {
@@ -28,12 +27,10 @@ public:
     size_t disconnect();
 
     std::shared_ptr<pqxx::connection> getConnection();
-    DBConnectionOption getOption() const;
     pqxx::result doRequest(const std::string& request);
     
 private:
     std::shared_ptr<pqxx::connection> connection_;
-    DBConnectionOption option_;
 };
 
 #endif /*CONNECTION_H*/

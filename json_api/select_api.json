@@ -1,0 +1,13 @@
+{
+    "header":
+    {
+        "type":"GET"
+    },
+    "body":
+    {
+        "source":"user_data",
+        "target":"login, password",
+        "option":"id='1'",
+        "limit": 12
+    }
+}

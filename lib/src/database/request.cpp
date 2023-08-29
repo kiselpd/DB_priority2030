@@ -53,3 +53,16 @@ std::string DBUpdateRequest::createRequest() const{
     }
     return str_request;
 };
+
+// DBDeleteRequest
+std::string DBDeleteRequest::createRequest() const{
+    std::string str_request;
+    if(!_source.empty()){
+        str_request += "DELETE FROM " + _source;
+        if(!_option.empty())
+            str_request += " WHERE " + _option;
+
+        str_request += " RETURNING * ;";
+    }
+    return str_request;
+};

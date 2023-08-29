@@ -31,11 +31,22 @@ public:
     std::string createRequest() const override;
 };
 
+
 class DBUpdateRequest : public DBBaseRequest
 {
 public:
     std::string _source;
     std::string _target;
+    std::string _option;
+
+    std::string createRequest() const override;
+};
+
+
+class DBDeleteRequest : public DBBaseRequest
+{
+public:
+    std::string _source;
     std::string _option;
 
     std::string createRequest() const override;

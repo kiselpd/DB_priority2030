@@ -1,5 +1,5 @@
-#ifndef DB_BACKEND_H
-#define DB_BACKEND_H
+#ifndef BACKEND_H
+#define BACKEND_H
 
 #include <pqxx/pqxx>
 
@@ -16,4 +16,4 @@ private:
     std::shared_ptr<DBConnectionPool> pool_;
 };
 
-#endif /*DB_BACKEND_H*/
+#endif /*BACKEND_H*/

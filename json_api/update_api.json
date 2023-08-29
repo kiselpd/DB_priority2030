@@ -1,0 +1,13 @@
+{
+    "header":
+    {
+        "type":"POST"
+    },
+    "body":
+    {
+        "source":"user_data",
+        "target":["login", "password"],
+        "value": ["new_login", "new_password"],
+        "option": "'id'=12"
+    }
+}
