@@ -101,15 +101,27 @@ std::shared_ptr<DBBaseRequest> BuilderDeleteRequest::build(){
 
 
 std::string getType(const std::string& request){
-    std::string header;
-    nlohmann::json json_request = nlohmann::json::parse(request);
-    return (std::string)json_request["header"]["type"];
+    std::string type;
+    try{
+        nlohmann::json json_request = nlohmann::json::parse(request);
+        type = json_request["header"]["type"];
+    }
+    catch(const std::exception& e){
+        std::cerr << e.what() << '\n';
+    }
+    
+    return type;
 };
 
 std::string getBody(const std::string& request){
-    nlohmann::json body;
-    nlohmann::json json_request = nlohmann::json::parse(request);
-    if(json_request.contains("body"))
+    std::string body;
+    try{
+        nlohmann::json json_request = nlohmann::json::parse(request);
         body = json_request["body"];
-    return body.dump();
+    }
+    catch(const std::exception& e){
+        std::cerr << e.what() << '\n';
+    }
+    
+    return body;
 };

@@ -6,15 +6,14 @@
 
 #include <vector>
 
-class ClientSession
+class ClientSession : public std::enable_shared_from_this<ClientSession>
 {
 public:
     ClientSession(boost::asio::io_service& io_service);
-    ~ClientSession();
 
     boost::asio::ip::tcp::socket& getSocket();
 
-    void start(std::shared_ptr<DBBackend> db);
+    void start(std::shared_ptr<DBBackend> db, std::shared_ptr<std::vector<std::shared_ptr<ClientSession>>> sessions);
     void stop();
 
 private:
@@ -29,6 +28,7 @@ private:
     const size_t buffer_size_ = 1024;  
 
     std::shared_ptr<DBBackend> db_;
+    std::shared_ptr<std::vector<std::shared_ptr<ClientSession>>> sessions_;
 };
 
 std::string get_string_from_vector(const std::vector<char>& buffer);

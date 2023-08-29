@@ -31,7 +31,7 @@ std::shared_ptr<DBConnection> DBConnectionPool::getFreeConnection(){
 };
 
 void DBConnectionPool::setFreeConnection(std::shared_ptr<DBConnection> free_connection){
-    std::unique_lock locker(m_mutex_);
+    std::unique_lock locker(this->m_mutex_);
     this->pool_.push(free_connection);
     locker.unlock();
     m_condition_.notify_one();

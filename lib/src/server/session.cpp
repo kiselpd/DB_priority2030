@@ -4,25 +4,23 @@
 #include "answer.h"
 
 // ClientSession
-ClientSession::ClientSession(boost::asio::io_service& io_service) : socket_(io_service){
-};
-
-ClientSession::~ClientSession(){
-    this->stop();
-    this->socket_.cancel();
-};
+ClientSession::ClientSession(boost::asio::io_service& io_service) : socket_(io_service){};
 
 boost::asio::ip::tcp::socket& ClientSession::getSocket(){
     return socket_;
 };
 
-void ClientSession::start(std::shared_ptr<DBBackend> db){
+void ClientSession::start(std::shared_ptr<DBBackend> db, std::shared_ptr<std::vector<std::shared_ptr<ClientSession>>> sessions){
     db_ = db;
+    sessions_ = sessions;
     this->do_read_();
 };
 
 void ClientSession::stop(){
     this->socket_.close();
+    auto self = this->shared_from_this();
+    auto it = std::find(sessions_->begin(), sessions_->end(), self);
+    sessions_->erase(it);
 };
 
 void ClientSession::do_read_(){
@@ -45,26 +43,27 @@ void ClientSession::read_handler_(const boost::system::error_code& error, size_t
         std::string type = getType(str_request);
         std::string body = getBody(str_request);
 
-        if(type == "GET")
-            builder = std::make_shared<BuilderSelectRequest>(body);
-        if(type == "POST")
-            builder = std::make_shared<BuilderUpdateRequest>(body);
-        if(type == "PUT")
-            builder = std::make_shared<BuilderInsertRequest>(body);
-        if(type == "DELETE")
-            builder = std::make_shared<BuilderDeleteRequest>(body);
+        if(!type.empty() && !body.empty()){
+            if(type == "GET")
+                builder = std::make_shared<BuilderSelectRequest>(body);
+            if(type == "POST")
+                builder = std::make_shared<BuilderUpdateRequest>(body);
+            if(type == "PUT")
+                builder = std::make_shared<BuilderInsertRequest>(body);
+            if(type == "DELETE")
+                builder = std::make_shared<BuilderDeleteRequest>(body);
 
-        auto request = builder->build();
-        auto result = db_->doRequest(request);
-        Answer answer(result);
-        
-        do_write_(answer.getAnswer());
+            auto request = builder->build();
+            auto result = db_->doRequest(request);
+            Answer answer(result);
+            
+            this->do_write_(answer.getAnswer());
+        }
+        else
+            this->do_read_();
     }
     else
-        int a;
-        // delete this;
-    
-    
+        this->stop();    
 };
 
 void ClientSession::do_write_(const std::string& buffer){
@@ -81,8 +80,8 @@ void ClientSession::do_write_(const std::string& buffer){
 void ClientSession::write_handler_(const boost::system::error_code& error, std::size_t bytes_transferred){
     if(!error)
         this->do_read_();
-
-    //обработать ошибку
+    else
+        this->stop();
 };
 
 std::string get_string_from_vector(const std::vector<char>& buffer){
