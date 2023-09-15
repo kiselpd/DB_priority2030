@@ -31,8 +31,6 @@ std::shared_ptr<DBConnectionPool> create_connection_pool(const DBConnectionOptio
    return pool;
 };
 
-
-
 void start(const short& port){
    boost::asio::io_service io_service;
    auto option = create_option();

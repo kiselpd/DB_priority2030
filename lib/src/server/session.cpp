@@ -40,6 +40,8 @@ void ClientSession::read_handler_(const boost::system::error_code& error, size_t
         std::string str_request = get_string_from_vector(this->buffer_);
         std::shared_ptr<BaseBuilder> builder;
         
+        std::cout << str_request << std::endl;
+
         std::string type = getType(str_request);
         std::string body = getBody(str_request);
 
@@ -56,7 +58,7 @@ void ClientSession::read_handler_(const boost::system::error_code& error, size_t
             auto request = builder->build();
             auto result = db_->doRequest(request);
             Answer answer(result);
-            
+            std::cout << answer.getAnswer() << std::endl;
             this->do_write_(answer.getAnswer());
         }
         else

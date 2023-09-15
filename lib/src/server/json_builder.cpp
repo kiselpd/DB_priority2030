@@ -114,7 +114,7 @@ std::string getType(const std::string& request){
 };
 
 std::string getBody(const std::string& request){
-    std::string body;
+    nlohmann::json body;
     try{
         nlohmann::json json_request = nlohmann::json::parse(request);
         body = json_request["body"];
@@ -123,5 +123,5 @@ std::string getBody(const std::string& request){
         std::cerr << e.what() << '\n';
     }
     
-    return body;
+    return body.dump();
 };
