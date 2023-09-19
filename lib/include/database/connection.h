@@ -3,20 +3,20 @@
 
 #include <pqxx/pqxx> 
 
-struct DBConnectionOption
+class DBConnectionOption
 {
-    DBConnectionOption(const std::string& host, const std::string& port,
-        const std::string& user, const std::string& password, const std::string& name);
-
-    DBConnectionOption(){};
-
+public:
+    size_t setConnectionOptionFromFile(const std::string& file_name);
     std::string getConnectionInfo() const;
 
     std::string _host;
     std::string _port;
     std::string _user;
     std::string _password;
-    std::string _name;
+    std::string _dbname;
+
+private:
+    size_t getConnectionOptionFromJson_(const std::ifstream& ifs);
 };
 
 

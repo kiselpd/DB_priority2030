@@ -1,15 +1,46 @@
 #include "connection.h"
+
 #include <boost/format.hpp>
 #include <memory>
+
 #include <iostream>
+#include <fstream>
+
+#include "json.hpp"
 
 // DBConnectionOption
-DBConnectionOption::DBConnectionOption(const std::string& host, const std::string& port, const std::string& user, const std::string& password, const std::string& name) :
-        _host(host), _port(port), _user(user), _password(password), _name(name){};
+size_t DBConnectionOption::setConnectionOptionFromFile(const std::string& file_name){
+    try{
+        std::ifstream ifs(file_name);
+        return this->getConnectionOptionFromJson_(ifs);
+    }
+    catch(const std::exception& e){
+        std::cerr << e.what() << '\n';
+        return EXIT_FAILURE;
+    }    
+};
+
+size_t DBConnectionOption::getConnectionOptionFromJson_(const std::ifstream& ifs){
+    try{
+        auto json = nlohmann::json::parse(ifs);
+        _user = json["user"];
+        _host = json["host"];
+        _port = json["port"];
+        _password = json["password"];
+        _dbname = json["dbname"];
+
+        return EXIT_SUCCESS;
+    }
+    catch(const std::exception& e){
+        std::cerr << e.what() << '\n';
+        return EXIT_FAILURE;
+    }
+    
+};
 
 std::string DBConnectionOption::getConnectionInfo() const{
     auto connection_info = boost::format("user=%1% host=%2% port=%3% password=%4% dbname=%5%")
-        % _user % _host % _port % _password % _name;
+        % _user % _host % _port % _password % _dbname;
     
     return connection_info.str();
 };
