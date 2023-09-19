@@ -34,8 +34,7 @@ size_t DBConnectionOption::getConnectionOptionFromJson_(const std::ifstream& ifs
     catch(const std::exception& e){
         std::cerr << e.what() << '\n';
         return EXIT_FAILURE;
-    }
-    
+    }  
 };
 
 std::string DBConnectionOption::getConnectionInfo() const{
