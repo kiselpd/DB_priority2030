@@ -6,6 +6,7 @@ add_subdirectory(include)
 add_subdirectory(src)
 
 file(GLOB INCLUDE_DIRS
+        ${JWT_INCLUDE_DIRS}
         ${DATABASE_INCLUDE_DIRS}
         ${SERVER_INCLUDE_DIRS}
 )
