@@ -16,7 +16,7 @@ public:
     std::string _dbname;
 
 private:
-    size_t getConnectionOptionFromJson_(const std::ifstream& ifs);
+    size_t getConnectionOptionFromJson_(std::shared_ptr<std::ifstream> ifs);
 };
 
 

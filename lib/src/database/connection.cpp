@@ -10,7 +10,7 @@
 // DBConnectionOption
 size_t DBConnectionOption::setConnectionOptionFromFile(const std::string& file_name){
     try{
-        std::ifstream ifs(file_name);
+        std::shared_ptr<std::ifstream> ifs = std::make_shared<std::ifstream>(file_name);
         return this->getConnectionOptionFromJson_(ifs);
     }
     catch(const std::exception& e){
@@ -20,9 +20,9 @@ size_t DBConnectionOption::setConnectionOptionFromFile(const std::string& file_n
     }    
 };
 
-size_t DBConnectionOption::getConnectionOptionFromJson_(const std::ifstream& ifs){
+size_t DBConnectionOption::getConnectionOptionFromJson_(std::shared_ptr<std::ifstream> ifs){
     try{
-        auto json = nlohmann::json::parse(ifs);
+        auto json = nlohmann::json::parse(*ifs);
         _user = json["user"];
         _host = json["host"];
         _port = json["port"];
