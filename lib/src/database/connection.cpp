@@ -5,7 +5,6 @@
 
 #include <iostream>
 #include <fstream>
-
 #include "json.hpp"
 
 // DBConnectionOption
@@ -15,6 +14,7 @@ size_t DBConnectionOption::setConnectionOptionFromFile(const std::string& file_n
         return this->getConnectionOptionFromJson_(ifs);
     }
     catch(const std::exception& e){
+        std::cerr << "Can`t find file: " << file_name << '\n';
         std::cerr << e.what() << '\n';
         return EXIT_FAILURE;
     }    
@@ -32,6 +32,7 @@ size_t DBConnectionOption::getConnectionOptionFromJson_(const std::ifstream& ifs
         return EXIT_SUCCESS;
     }
     catch(const std::exception& e){
+        std::cerr << "File with db_info error!" << '\n';
         std::cerr << e.what() << '\n';
         return EXIT_FAILURE;
     }  
@@ -63,6 +64,7 @@ size_t DBConnection::disconnect(){
     }
     catch(const std::exception& e){
         std::cerr << "Connection is already closed!" << std::endl;
+        std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;
     }
 };

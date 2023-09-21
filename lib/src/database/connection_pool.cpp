@@ -1,14 +1,18 @@
 #include "connection_pool.h"
 
 // DBConnectionPool
-size_t DBConnectionPool::createPool(const DBConnectionOption& db_option, const size_t& pool_size){
-    this->option_ = db_option;
-    for (size_t i = 0; i < pool_size; i++){
+DBConnectionPool::DBConnectionPool(const DBConnectionOption& option, const size_t& pool_size) :
+    option_(option), pool_size_(pool_size){};
+
+size_t DBConnectionPool::createPool(){
+    for (size_t i = 0; i < this->pool_size_; i++){
         auto error = this->addConnection();
-        if(error)
-            return EXIT_FAILURE;
+        if(error){
+            this->pool_size_ = i;
+            break;
+        }
     }
-    return EXIT_SUCCESS;
+    return this->pool_size_;
 };
 
 void DBConnectionPool::clearPool(){
@@ -37,28 +41,32 @@ void DBConnectionPool::setFreeConnection(std::shared_ptr<DBConnection> free_conn
     m_condition_.notify_one();
 };
 
-
-size_t DBConnectionPool::deleteConnection(){
-    if(pool_size_){
-        auto free_conn = this->getFreeConnection();
-        this->pool_size_--;
-    }
+size_t DBConnectionPool::deleteConnection(const size_t& connections_count){
+    for (size_t i = 0; i < connections_count; i++)
+        if(pool_size_){
+            auto free_conn = this->getFreeConnection();
+            this->pool_size_--;
+        }
 
     return this->pool_size_;
 };
 
-
-size_t DBConnectionPool::addConnection(){
-    std::shared_ptr<DBConnection> new_conn = std::make_shared<DBConnection>();
-    auto error = new_conn->connect(this->getOption());
-    if(!error){
-        this->setFreeConnection(new_conn);
-        this->pool_size_++;
+size_t DBConnectionPool::addConnection(const size_t& connections_count){
+    for (size_t i = 0; i < connections_count; i++){
+        std::shared_ptr<DBConnection> new_conn = std::make_shared<DBConnection>();
+        auto error = new_conn->connect(this->getOption());
+        if(!error){
+            this->setFreeConnection(new_conn);
+            this->pool_size_++;
+        }
     }
-    return error;
+    
+    return this->pool_size_;
 };
 
-DBConnectionOption DBConnectionPool::getOption() const{return this->option_;};
+DBConnectionOption DBConnectionPool::getOption() const{
+    return this->option_;
+};
 
 size_t DBConnectionPool::getPoolSize() const{
     return this->pool_size_;
