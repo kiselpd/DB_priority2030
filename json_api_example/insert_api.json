@@ -1,7 +1,10 @@
 {
     "header":
     {
-        "type":"PUT"
+        "type": "PUT",
+        "token": "jwt token",
+        "datestamp": "21.09.2023",
+        "timestamp": "10:04:12"
     },
     "body":
     {

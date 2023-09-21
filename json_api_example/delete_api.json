@@ -1,0 +1,14 @@
+{
+    "header":
+    {
+        "type": "DELETE",
+        "token": "jwt token",
+        "datestamp": "21.09.2023",
+        "timestamp": "10:04:12"
+    },
+    "body":
+    {
+        "source":"user_data",
+        "option":"'id'=1"
+    }
+}

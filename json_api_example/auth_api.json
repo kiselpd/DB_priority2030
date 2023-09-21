@@ -1,0 +1,13 @@
+{
+    "header":
+    {
+        "type": "POST",
+        "datestamp": "21.09.2023",
+        "timestamp": "10:04:12"
+    },
+    "body":
+    {
+        "username": "username",
+        "password": "password"
+    }
+}
