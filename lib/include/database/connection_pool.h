@@ -9,7 +9,7 @@
 class DBConnectionPool
 {
 public:
-    DBConnectionPool(const DBConnectionOption& option, const size_t& pool_size);
+    DBConnectionPool(const DBConnectionOption &option, const size_t &pool_size);
 
     size_t createPool();
     void clearPool();
@@ -17,13 +17,13 @@ public:
     std::shared_ptr<DBConnection> getFreeConnection();
     void setFreeConnection(std::shared_ptr<DBConnection> free_connection);
 
-    size_t deleteConnection(const size_t& connections_count = 1);
-    size_t addConnection(const size_t& connections_count = 1);
+    size_t deleteConnection(const size_t &connections_count = 1);
+    size_t addConnection(const size_t &connections_count = 1);
 
     DBConnectionOption getOption() const;
     size_t getPoolSize() const;
     size_t getFreeConectionCount();
-    
+
 private:
     DBConnectionOption option_;
     size_t pool_size_;

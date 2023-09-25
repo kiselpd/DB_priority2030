@@ -1,5 +1,6 @@
 #include "json_builder.h"
-#include "json.hpp"
+
+#include <nlohmann/json.hpp>
 #include <vector>
 #include <boost/algorithm/string/join.hpp>
 

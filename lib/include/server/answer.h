@@ -1,9 +1,9 @@
 #ifndef ANSWER_H
 #define ANSWER_H
 
-#include<iostream>
+#include <iostream>
 #include <pqxx/pqxx>
-#include "json.hpp"
+#include <nlohmann/json.hpp>
 
 class Answer
 {

@@ -11,7 +11,7 @@ class DBBackend
 public:
     DBBackend(std::shared_ptr<DBConnectionPool> pool);
     pqxx::result doRequest(std::shared_ptr<DBBaseRequest> request);
-    
+
 private:
     std::shared_ptr<DBConnectionPool> pool_;
 };

@@ -1,11 +1,11 @@
 #include "connection.h"
 
-#include <boost/format.hpp>
 #include <memory>
-
 #include <iostream>
 #include <fstream>
-#include "json.hpp"
+
+#include <boost/format.hpp>
+#include <nlohmann/json.hpp>
 
 // DBConnectionOption
 size_t DBConnectionOption::setConnectionOptionFromFile(const std::string& file_name){
