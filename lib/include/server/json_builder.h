@@ -1,7 +1,7 @@
 #ifndef JSON_BUILDER_H
 #define JSON_BUILDER_H
 
-#include<iostream>
+#include <iostream>
 #include "request.h"
 #include <memory>
 
@@ -11,52 +11,47 @@ public:
     virtual std::shared_ptr<DBBaseRequest> build() = 0;
 };
 
-
 class BuilderSelectRequest : public BaseBuilder
 {
 public:
-    BuilderSelectRequest(const std::string& request);
+    BuilderSelectRequest(const std::string &request);
     std::shared_ptr<DBBaseRequest> build() override;
 
 private:
     std::string str_request_;
 };
-
 
 class BuilderInsertRequest : public BaseBuilder
 {
 public:
-    BuilderInsertRequest(const std::string& request);
+    BuilderInsertRequest(const std::string &request);
     std::shared_ptr<DBBaseRequest> build() override;
 
 private:
     std::string str_request_;
 };
-
 
 class BuilderUpdateRequest : public BaseBuilder
 {
 public:
-    BuilderUpdateRequest(const std::string& request);
+    BuilderUpdateRequest(const std::string &request);
     std::shared_ptr<DBBaseRequest> build() override;
 
 private:
     std::string str_request_;
 };
-
 
 class BuilderDeleteRequest : public BaseBuilder
 {
 public:
-    BuilderDeleteRequest(const std::string& request);
+    BuilderDeleteRequest(const std::string &request);
     std::shared_ptr<DBBaseRequest> build() override;
 
 private:
     std::string str_request_;
 };
 
-
-std::string getBody(const std::string& request);
-std::string getType(const std::string& request);
+std::string getBody(const std::string &request);
+std::string getType(const std::string &request);
 
 #endif /*JSON_BUILDER_H*/
