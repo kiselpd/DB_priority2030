@@ -16,7 +16,7 @@ public:
 
     jwt::jwt_payload get() const;
 
-private:
+// private:
     std::string user_id_;
     std::string user_role_;
 };
@@ -30,7 +30,7 @@ public:
 
 private:
     jwt::params::param_seq_list_t::iterator getRandomAlgo_() const;
-    
+
     jwt::params::param_seq_list_t list_algo_;
     std::string secret_;
 };
