@@ -1,10 +1,3 @@
-#include <iostream>
-#include "client_acceptor.h"
-#include "backend.h"
-#include "connection_pool.h"
-
-#include <jwt_builder.h>
-
 // std::shared_ptr<DBConnectionPool> create_connection_pool(const DBConnectionOption& option, const size_t& pool_size){
 //    std::shared_ptr<DBConnectionPool> pool = std::make_shared<DBConnectionPool>();
 //    pool->createPool(option, pool_size);

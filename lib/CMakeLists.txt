@@ -11,12 +11,14 @@ add_subdirectory(src)
 file(GLOB INCLUDE_DIRS
         ${JWT_INCLUDE_DIRS}
         ${DATABASE_INCLUDE_DIRS}
+        ${SESSION_INCLUDE_DIRS}
         ${SERVER_INCLUDE_DIRS}
 )
 
 file(GLOB SOURCE_FILES
         ${JWT_SOURCE_FILES}
         ${DATABASE_SOURCE_FILES}
+        ${SESSION_SOURCE_FILES}
         ${SERVER_SOURCE_FILES}
 )
 

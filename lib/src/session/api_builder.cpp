@@ -1,16 +1,17 @@
-#include "json_builder.h"
+#include "api_builder.h"
 
 #include <nlohmann/json.hpp>
-#include <vector>
-#include <boost/algorithm/string/join.hpp>
+#include <boost/algorithm/string.hpp>
 
-// BuilderSelectRequest
-BuilderSelectRequest::BuilderSelectRequest(const std::string &request) : str_request_(request){};
+// SelectAPIBuilder
+SelectAPIBuilder::SelectAPIBuilder(const std::string &id, const std::string &request) : id_(id),
+                                                                                        str_request_(request){};
 
-std::shared_ptr<DBBaseRequest> BuilderSelectRequest::build()
+std::shared_ptr<DBBaseRequest> SelectAPIBuilder::build()
 {
     nlohmann::json json_request = nlohmann::json::parse(str_request_);
     std::shared_ptr<DBSelectRequest> db_request = std::make_shared<DBSelectRequest>();
+
     if (json_request.contains("target"))
         db_request->_target = json_request["target"];
 
@@ -18,7 +19,7 @@ std::shared_ptr<DBBaseRequest> BuilderSelectRequest::build()
         db_request->_source = json_request["source"];
 
     if (json_request.contains("option"))
-        db_request->_option = json_request["option"];
+        db_request->_option = "user_id = '" + id_ + "' AND " + (std::string)json_request["option"];
 
     if (json_request.contains("limit"))
         db_request->_limit = (size_t)json_request["limit"];
@@ -26,10 +27,11 @@ std::shared_ptr<DBBaseRequest> BuilderSelectRequest::build()
     return db_request;
 };
 
-// BuilderInsertRequest
-BuilderInsertRequest::BuilderInsertRequest(const std::string &request) : str_request_(request){};
+// InsertAPIBuilder
+InsertAPIBuilder::InsertAPIBuilder(const std::string &id, const std::string &request) : id_(id),
+                                                                                        str_request_(request){};
 
-std::shared_ptr<DBBaseRequest> BuilderInsertRequest::build()
+std::shared_ptr<DBBaseRequest> InsertAPIBuilder::build()
 {
     nlohmann::json json_request = nlohmann::json::parse(str_request_);
     std::shared_ptr<DBInsertRequest> db_request = std::make_shared<DBInsertRequest>();
@@ -40,6 +42,7 @@ std::shared_ptr<DBBaseRequest> BuilderInsertRequest::build()
     if (json_request.contains("target"))
     {
         std::vector<std::string> target;
+
         for (auto &elem : json_request["target"])
             target.push_back(elem);
 
@@ -49,11 +52,14 @@ std::shared_ptr<DBBaseRequest> BuilderInsertRequest::build()
     if (json_request.contains("value"))
     {
         std::vector<std::string> all_value_vector;
+
         for (auto &array : json_request["value"])
         {
             std::vector<std::string> value_vector;
+
             for (auto &elem : array)
                 value_vector.push_back("\'" + (std::string)elem + "\'");
+
             std::string value = "(" + boost::algorithm::join(value_vector, ",") + ")";
             all_value_vector.push_back(value);
         }
@@ -63,10 +69,12 @@ std::shared_ptr<DBBaseRequest> BuilderInsertRequest::build()
 
     return db_request;
 };
-// BuilderUpdateRequest
-BuilderUpdateRequest::BuilderUpdateRequest(const std::string &request) : str_request_(request){};
 
-std::shared_ptr<DBBaseRequest> BuilderUpdateRequest::build()
+// UpdateAPIBuilder
+UpdateAPIBuilder::UpdateAPIBuilder(const std::string &id, const std::string &request) : id_(id),
+                                                                                        str_request_(request){};
+
+std::shared_ptr<DBBaseRequest> UpdateAPIBuilder::build()
 {
     nlohmann::json json_request = nlohmann::json::parse(str_request_);
     std::shared_ptr<DBUpdateRequest> db_request = std::make_shared<DBUpdateRequest>();
@@ -79,6 +87,7 @@ std::shared_ptr<DBBaseRequest> BuilderUpdateRequest::build()
         std::vector<std::string> target_vector;
         auto target = json_request["target"];
         auto value = json_request["value"];
+
         for (size_t i = 0; i < target.size(); i++)
             target_vector.push_back((std::string)target[i] + "=" + (std::string)value[i]);
 
@@ -86,15 +95,16 @@ std::shared_ptr<DBBaseRequest> BuilderUpdateRequest::build()
     }
 
     if (json_request.contains("option"))
-        db_request->_option = json_request["option"];
+        db_request->_option = "user_id = '" + id_ + "' AND " + (std::string)json_request["option"];
 
     return db_request;
 };
 
-// BuilderDeleteRequest
-BuilderDeleteRequest::BuilderDeleteRequest(const std::string &request) : str_request_(request){};
+// DeleteAPIBuilder
+DeleteAPIBuilder::DeleteAPIBuilder(const std::string &id, const std::string &request) : id_(id),
+                                                                                        str_request_(request){};
 
-std::shared_ptr<DBBaseRequest> BuilderDeleteRequest::build()
+std::shared_ptr<DBBaseRequest> DeleteAPIBuilder::build()
 {
     nlohmann::json json_request = nlohmann::json::parse(str_request_);
     std::shared_ptr<DBDeleteRequest> db_request = std::make_shared<DBDeleteRequest>();
@@ -103,39 +113,30 @@ std::shared_ptr<DBBaseRequest> BuilderDeleteRequest::build()
         db_request->_source = json_request["source"];
 
     if (json_request.contains("option"))
-        db_request->_option = json_request["option"];
+        db_request->_option = "user_id = '" + id_ + "' AND " + (std::string)json_request["option"];
 
     return db_request;
 };
 
-std::string getType(const std::string &request)
+// AuthAPIBuilder
+AuthAPIBuilder::AuthAPIBuilder(const std::string &request) : str_request_(request){};
+
+std::shared_ptr<DBBaseRequest> AuthAPIBuilder::build()
 {
-    std::string type;
-    try
-    {
-        nlohmann::json json_request = nlohmann::json::parse(request);
-        type = json_request["header"]["type"];
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
+    nlohmann::json json_request = nlohmann::json::parse(str_request_);
+    std::shared_ptr<DBSelectRequest> db_request = std::make_shared<DBSelectRequest>();
 
-    return type;
-};
+    // if (json_request.contains("target"))
+    //     db_request->_target = json_request["target"];
 
-std::string getBody(const std::string &request)
-{
-    nlohmann::json body;
-    try
-    {
-        nlohmann::json json_request = nlohmann::json::parse(request);
-        body = json_request["body"];
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
+    // if (json_request.contains("source"))
+    //     db_request->_source = json_request["source"];
 
-    return body.dump();
+    // if (json_request.contains("option"))
+    //     db_request->_option = "user_id = '" + id_ + "' AND " + (std::string)json_request["option"];
+
+    // if (json_request.contains("limit"))
+    //     db_request->_limit = (size_t)json_request["limit"];
+
+    return db_request;
 };

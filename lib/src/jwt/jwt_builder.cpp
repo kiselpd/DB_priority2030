@@ -21,12 +21,17 @@ jwt::jwt_payload JWTPayload::get() const
     return payload;
 };
 
+std::pair<std::string, std::string> JWTPayload::getInfo() const
+{
+    return {user_id_, user_role_};
+};
+
 // JWTBuilder
 JWTBuilder::JWTBuilder(const jwt::params::param_seq_list_t &list_algo, const std::string &secret) : list_algo_(list_algo), secret_(secret){};
 
-std::string JWTBuilder::getToken(const JWTPayload &payload) const
+jwt_token JWTBuilder::getToken(const JWTPayload &payload) const
 {
-    std::string token_str;
+    jwt_token token_str;
     try
     {
         jwt::jwt_header header;
@@ -46,7 +51,7 @@ std::string JWTBuilder::getToken(const JWTPayload &payload) const
     return token_str;
 };
 
-JWTPayload JWTBuilder::getPayload(const std::string &token_str) const
+JWTPayload JWTBuilder::getPayload(const jwt_token &token_str) const
 {
     try
     {

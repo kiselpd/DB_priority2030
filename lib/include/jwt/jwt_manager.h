@@ -3,38 +3,23 @@
 
 #include <map>
 #include <mutex>
-#include <jwt_builder.h>
 
-class JWTCollection
-{
-public:
-    bool has(const std::string& token) const;
-    void add(const std::string& token);
-    void remove(const std::string& token);
-    
-private:
-    std::map<std::string> token_set_;
-    std::mutex mut_;
-};
-
-
-class JWTStatusTimer
-{
-public:
-
-private:
-};
-
+#include "jwt_builder.h"
+#include "jwt_collection.h"
 
 class JWTAuthenticationManager
 {
 public:
-    bool isAuthenticated(const std::string& token) const;
+    JWTAuthenticationManager(std::shared_ptr<boost::asio::io_service> io_ptr, const jwt::params::param_seq_list_t &list_algo, const std::string &secret);
 
+    bool isAuthenticated(const jwt_token &token);
+    jwt_token addNewJWT(const std::string &user_id, const std::string &user_role);
+    std::pair<std::string, std::string> getInfo(const jwt_token &token);
 
 private:
-    JWTCollection collection_;
-    JWTBuilder builder_;
+    std::shared_ptr<JWTCollection> collection_;
+    std::shared_ptr<JWTStatusTimer> timer_;
+    std::shared_ptr<JWTBuilder> builder_;
 };
 
 #endif /*JWT_MANAGER_H*/
