@@ -6,7 +6,6 @@
 class DBConnectionOption
 {
 public:
-    size_t setConnectionOptionFromFile(const std::string &file_name);
     std::string getConnectionInfo() const;
 
     std::string _host;
@@ -14,9 +13,6 @@ public:
     std::string _user;
     std::string _password;
     std::string _dbname;
-
-private:
-    size_t getConnectionOptionFromJson_(std::shared_ptr<std::ifstream> ifs);
 };
 
 class DBConnection

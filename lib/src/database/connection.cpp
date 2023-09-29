@@ -8,42 +8,6 @@
 #include <nlohmann/json.hpp>
 
 // DBConnectionOption
-size_t DBConnectionOption::setConnectionOptionFromFile(const std::string &file_name)
-{
-    try
-    {
-        std::shared_ptr<std::ifstream> ifs = std::make_shared<std::ifstream>(file_name);
-        return this->getConnectionOptionFromJson_(ifs);
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << "Can`t find file: " << file_name << '\n';
-        std::cerr << e.what() << '\n';
-        return EXIT_FAILURE;
-    }
-};
-
-size_t DBConnectionOption::getConnectionOptionFromJson_(std::shared_ptr<std::ifstream> ifs)
-{
-    try
-    {
-        auto json = nlohmann::json::parse(*ifs);
-        _user = json["user"];
-        _host = json["host"];
-        _port = json["port"];
-        _password = json["password"];
-        _dbname = json["dbname"];
-
-        return EXIT_SUCCESS;
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << "File with db_info error!" << '\n';
-        std::cerr << e.what() << '\n';
-        return EXIT_FAILURE;
-    }
-};
-
 std::string DBConnectionOption::getConnectionInfo() const
 {
     auto connection_info = boost::format("user=%1% host=%2% port=%3% password=%4% dbname=%5%") % _user % _host % _port % _password % _dbname;
