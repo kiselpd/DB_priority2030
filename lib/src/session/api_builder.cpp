@@ -132,11 +132,11 @@ std::shared_ptr<DBBaseRequest> AuthAPIBuilder::build()
     // if (json_request.contains("source"))
     //     db_request->_source = json_request["source"];
 
-    // if (json_request.contains("option"))
-    //     db_request->_option = "user_id = '" + id_ + "' AND " + (std::string)json_request["option"];
+    // // if (json_request.contains("option"))
+    // //     db_request->_option = "user_id = '" + id_ + "' AND " + (std::string)json_request["option"];
 
-    // if (json_request.contains("limit"))
-    //     db_request->_limit = (size_t)json_request["limit"];
+    // // if (json_request.contains("limit"))
+    // //     db_request->_limit = (size_t)json_request["limit"];
 
     return db_request;
 };

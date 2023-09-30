@@ -1,13 +1,14 @@
-#include "server.h"
-
 #include <iostream>
+
+#include "server.h"
 
 size_t start(std::shared_ptr<Server> server){
     ServerOption server_option;
-    auto error = server_option.readConfig("config.cfg");
+    auto error = server_option.readConfig("../config.cfg");
 
     if (!error)
         error = server->start(server_option);
+        std::cout << "read cfg" << std::endl;
     else
         std::cout << "Incorrect format config.cfg!" << std::endl;
 
@@ -29,7 +30,7 @@ void run()
 
     if(!error){
         std::cout << "Server is running!" << std::endl;
-        stop(server);
+        // stop(server);
     }
     else
         std::cout << "Server is not running!" << std::endl;

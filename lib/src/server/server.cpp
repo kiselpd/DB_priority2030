@@ -9,7 +9,7 @@ size_t ServerOption::readConfig(const std::string &config_name)
         cfg.readFile(config_name.c_str());
         const auto &root = cfg.getRoot();
 
-        if (readAcceptorConfig_(root["acceptor"]) && readDBConfig_(root["database"]) && readJWTConfig_(root["jwt"]))
+        if (readAcceptorConfig_(root["application"]["acceptor"]) && readDBConfig_(root["application"]["database"]) && readJWTConfig_(root["application"]["jwt"]))
             return EXIT_SUCCESS;
         else
             return EXIT_FAILURE;
