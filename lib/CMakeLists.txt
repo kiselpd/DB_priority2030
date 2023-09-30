@@ -25,7 +25,7 @@ file(GLOB SOURCE_FILES
 add_library(${PROJECT_NAME} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS})
 
-target_link_libraries(${PROJECT_NAME} pqxx pthread nlohmann_json::nlohmann_json cpp-jwt::cpp-jwt)
+target_link_libraries(${PROJECT_NAME} pqxx pthread nlohmann_json::nlohmann_json cpp-jwt::cpp-jwt config++)
 
 set(CORE_LIBRARIES ${PROJECT_NAME} PARENT_SCOPE)
 set(CORE_INCLUDE_DIRS ${INCLUDE_DIRS} PARENT_SCOPE)

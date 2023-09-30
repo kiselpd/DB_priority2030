@@ -80,3 +80,8 @@ nlohmann::json ResultAPIAnswer::addBody_(const std::string &jwt_token) const
     json_body["value"] = jwt_token;
     return json_body;
 };
+
+std::string ResultAPIAnswer::get() const
+{
+    return answer_;
+};

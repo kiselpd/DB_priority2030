@@ -1,45 +1,102 @@
 #include "server.h"
 
-// class ServerOption
-// {
-// public:
-//     size_t readConfig(const std::string &config_name);
-
-//     std::string getSecret() const;
-//     short getAcceptorPort() const;
-//     size_t getDBPoolSize() const;
-//     DBConnectionOption getDBOption() const;
-
-// private:
-//     std::string secret_;
-//     short accept_port_;
-
-//     size_t db_pool_size_;
-//     DBConnectionOption db_option_;
-// };
 // ServerOption
+size_t ServerOption::readConfig(const std::string &config_name)
+{
+    try
+    {
+        libconfig::Config cfg;
+        cfg.readFile(config_name.c_str());
+        const auto &root = cfg.getRoot();
+
+        if (readAcceptorConfig_(root["acceptor"]) && readDBConfig_(root["database"]) && readJWTConfig_(root["jwt"]))
+            return EXIT_SUCCESS;
+        else
+            return EXIT_FAILURE;
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+        return EXIT_FAILURE;
+    }
+};
+
+std::string ServerOption::getJWTSecret() const
+{
+    return this->secret_;
+};
+
+jwt::params::param_seq_list_t ServerOption::getJWTAlgo() const
+{
+    return algo_;
+};
+
+short ServerOption::getAcceptorPort() const
+{
+    return this->acceptor_port_;
+};
+
+size_t ServerOption::getDBPoolSize() const
+{
+    return this->db_pool_size_;
+};
+
+DBConnectionOption ServerOption::getDBOption() const
+{
+    return this->db_option_;
+};
+
+bool ServerOption::readDBConfig_(const libconfig::Setting &settings)
+{
+    return settings.lookupValue("pool_size", db_pool_size_) &&
+           settings.lookupValue("name", db_option_._dbname) &&
+           settings.lookupValue("host", db_option_._host) &&
+           settings.lookupValue("password", db_option_._password) &&
+           settings.lookupValue("port", db_option_._port) &&
+           settings.lookupValue("user", db_option_._user);
+};
+
+bool ServerOption::readJWTConfig_(const libconfig::Setting &settings)
+{
+    algo_ = {"HS256"};
+    return settings.lookupValue("secret", secret_);
+};
+
+bool ServerOption::readAcceptorConfig_(const libconfig::Setting &settings)
+{
+    return settings.lookupValue("port", acceptor_port_);
+};
 
 // Server
 Server::Server() : io_(std::make_shared<boost::asio::io_service>()) {}
 
-size_t Server::autoRun(const ServerOption &option)
+size_t Server::start(const ServerOption &option)
 {
-    auto error = this->addAcceptorService(option.getAcceptorPort());
+    auto error = this->addAcceptorService_(option);
 
     if (!error)
-        error = this->addSessionService(option.getDBOption(), option.getDBPoolSize(), option.getSecret());
+        error = this->addSessionService_(option);
 
     if (!error)
-        error = this->start();
+    {
+        acceptor_service_->start();
+        io_->run();
+    }
 
     return error;
 };
 
-size_t Server::addAcceptorService(const short &port)
+size_t Server::stop()
+{
+    acceptor_service_->stop();
+    io_->stop();
+};
+
+size_t Server::addAcceptorService_(const ServerOption &option)
 {
     try
     {
-        acceptor_service_ = std::make_shared<AcceptorService>(io_, port);
+        acceptor_service_ = std::make_shared<AcceptorService>(io_, option.getAcceptorPort());
         std::cerr << "Acceptor service is ready!" << '\n';
 
         if (acceptor_service_ && session_service_)
@@ -50,20 +107,20 @@ size_t Server::addAcceptorService(const short &port)
     catch (const std::exception &e)
     {
         std::cerr << e.what() << '\n';
-        std::cerr << "Not possible to use port " << port << "." << '\n';
+        std::cerr << "Not possible to use port " << option.getAcceptorPort() << "." << '\n';
         return EXIT_FAILURE;
     }
 };
 
-size_t Server::addSessionService(const DBConnectionOption &db_option, const size_t &db_pool_size, const std::string &secret_jwt_word)
+size_t Server::addSessionService_(const ServerOption &option)
 {
     try
     {
-        auto db = this->connectToDB_(db_option, db_pool_size);
+        auto db = this->connectToDB_(option.getDBOption(), option.getDBPoolSize());
 
         if (db)
         {
-            auto jwt_manager = std::make_shared<JWTAuthenticationManager>(io_, jwt::params::param_seq_list_t({"HS256"}), secret_jwt_word);
+            auto jwt_manager = std::make_shared<JWTAuthenticationManager>(io_, option.getJWTAlgo(), option.getJWTSecret());
             session_service_ = std::make_shared<SessionService>(db, jwt_manager);
             std::cerr << "Session service is ready!" << '\n';
         }
@@ -78,17 +135,6 @@ size_t Server::addSessionService(const DBConnectionOption &db_option, const size
         std::cerr << e.what() << '\n';
         return EXIT_FAILURE;
     }
-};
-
-size_t Server::start()
-{
-    acceptor_service_->start();
-    io_->run();
-};
-
-size_t Server::stop()
-{
-    io_->stop();
 };
 
 std::shared_ptr<DBBackend> Server::connectToDB_(const DBConnectionOption &db_option, const size_t &db_pool_size)
