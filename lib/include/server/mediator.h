@@ -5,12 +5,13 @@
 
 class BaseColleague;
 
-class Mediator : public std::enable_shared_from_this<Mediator>
+class Mediator : virtual public std::enable_shared_from_this<Mediator>
 {
 public:
     Mediator(std::shared_ptr<BaseColleague> acceptor_service, std::shared_ptr<BaseColleague> session_service);
-    ~Mediator();
+    virtual ~Mediator(){};
 
+    void registerColleagues();
     void send(std::shared_ptr<boost::asio::ip::tcp::socket> socket_ptr);
 
 private:

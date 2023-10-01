@@ -11,7 +11,6 @@
 std::string DBConnectionOption::getConnectionInfo() const
 {
     auto connection_info = boost::format("user=%1% host=%2% port=%3% password=%4% dbname=%5%") % _user % _host % _port % _password % _dbname;
-
     return connection_info.str();
 };
 
@@ -20,7 +19,7 @@ size_t DBConnection::connect(const DBConnectionOption &connection_option)
 {
     try
     {
-        connection_ = std::shared_ptr<pqxx::connection>(new pqxx::connection(connection_option.getConnectionInfo()));
+        connection_ = std::make_shared<pqxx::connection>(connection_option.getConnectionInfo());
         return EXIT_SUCCESS;
     }
     catch (const std::exception &e)

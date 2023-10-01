@@ -2,16 +2,12 @@
 
 // Mediator
 Mediator::Mediator(std::shared_ptr<BaseColleague> acceptor_service, std::shared_ptr<BaseColleague> session_service) : acceptor_service_(acceptor_service),
-                                                                                                                      session_service_(session_service)
-{
-    acceptor_service->registerMediator(this->shared_from_this());
-    session_service->registerMediator(this->shared_from_this());
-};
+                                                                                                                      session_service_(session_service){};
 
-Mediator::~Mediator()
+void Mediator::registerColleagues()
 {
-    acceptor_service_.reset();
-    session_service_.reset();
+    acceptor_service_.lock()->registerMediator(this->shared_from_this());
+    session_service_.lock()->registerMediator(this->shared_from_this());
 };
 
 void Mediator::send(std::shared_ptr<boost::asio::ip::tcp::socket> socket_ptr)

@@ -79,6 +79,7 @@ size_t Server::start(const ServerOption &option)
 
     if (!error)
     {
+        this->bindServices_();
         acceptor_service_->start();
         io_->run();
     }
@@ -98,9 +99,6 @@ size_t Server::addAcceptorService_(const ServerOption &option)
     {
         acceptor_service_ = std::make_shared<AcceptorService>(io_, option.getAcceptorPort());
         std::cerr << "Acceptor service is ready!" << '\n';
-
-        if (acceptor_service_ && session_service_)
-            this->bindServices_();
 
         return EXIT_SUCCESS;
     }
@@ -124,9 +122,8 @@ size_t Server::addSessionService_(const ServerOption &option)
             session_service_ = std::make_shared<SessionService>(db, jwt_manager);
             std::cerr << "Session service is ready!" << '\n';
         }
-
-        if (acceptor_service_ && session_service_)
-            this->bindServices_();
+        else
+            return EXIT_FAILURE;
 
         return EXIT_SUCCESS;
     }
@@ -146,7 +143,7 @@ std::shared_ptr<DBBackend> Server::connectToDB_(const DBConnectionOption &db_opt
     if (pool_size)
     {
         std::cout << "Pool is created with " << pool_size << " connections." << std::endl;
-        auto db_ = std::make_shared<DBBackend>(conn_pool);
+        db_ = std::make_shared<DBBackend>(conn_pool);
     }
     else
         std::cout << "Pool is not created." << std::endl;
@@ -157,4 +154,5 @@ std::shared_ptr<DBBackend> Server::connectToDB_(const DBConnectionOption &db_opt
 void Server::bindServices_()
 {
     auto mediator = std::make_shared<Mediator>(acceptor_service_, session_service_);
+    mediator->registerColleagues();
 };

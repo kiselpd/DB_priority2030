@@ -7,23 +7,23 @@ size_t DBConnectionPool::createPool()
 {
     for (size_t i = 0; i < this->pool_size_; i++)
     {
-        auto error = this->addConnection();
-        if (error)
+        std::shared_ptr<DBConnection> new_conn = std::make_shared<DBConnection>();
+        auto error = new_conn->connect(this->getOption());
+
+        if (!error)
+            this->setFreeConnection(new_conn);
+        else
         {
-            this->pool_size_ = i;
+            pool_size_ = i;
             break;
         }
     }
-    return this->pool_size_;
+    return pool_size_;
 };
 
 void DBConnectionPool::clearPool()
 {
-    while (this->pool_size_)
-    {
-        this->deleteConnection();
-        this->pool_size_--;
-    }
+    this->deleteConnection(pool_size_);
 };
 
 std::shared_ptr<DBConnection> DBConnectionPool::getFreeConnection()
