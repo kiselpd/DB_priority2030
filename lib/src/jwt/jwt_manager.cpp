@@ -1,7 +1,7 @@
 #include "jwt_manager.h"
 
 // JWTAuthenticationManager
-JWTAuthenticationManager::JWTAuthenticationManager(std::shared_ptr<boost::asio::io_service> io_ptr, const jwt::params::param_seq_list_t &list_algo, const std::string &secret) : collection_(std::make_shared<JWTCollection>()),
+JWTAuthenticationManager::JWTAuthenticationManager(std::shared_ptr<boost::asio::io_service> io_ptr, const std::vector<std::string> &list_algo, const std::string &secret) : collection_(std::make_shared<JWTCollection>()),
                                                                                                                                                                                  timer_(std::make_shared<JWTStatusTimer>(io_ptr, collection_)),
                                                                                                                                                                                  builder_(std::make_shared<JWTBuilder>(list_algo, secret)){};
 

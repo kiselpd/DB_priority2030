@@ -1,17 +1,14 @@
 #include "api_request.h"
 
-#include "nlohmann/json.hpp"
-
 // RequestHeader
-bool RequestHeader::fill(const std::string &request_header)
+bool RequestHeader::fill(const nlohmann::json &request_header)
 {
     try
     {
-        nlohmann::json json_header = nlohmann::json::parse(request_header);
-        _method = json_header[request::header::method];
+        _method = request_header[request::header::method];
 
-        if (json_header.contains(request::header::token))
-            _token = json_header[request::header::token];
+        if (request_header.contains(request::header::token))
+            _token = request_header[request::header::token];
     }
     catch (const std::exception &e)
     {
@@ -23,7 +20,7 @@ bool RequestHeader::fill(const std::string &request_header)
 };
 
 // RequestBody
-bool RequestBody::fill(const std::string &request_body)
+bool RequestBody::fill(const nlohmann::json &request_body)
 {
     if (!request_body.empty())
         this->_json_request = request_body;
@@ -36,16 +33,17 @@ bool RequestBody::fill(const std::string &request_body)
 // RequestToAPI
 bool RequestToAPI::fill(const std::string &request)
 {
+    std::cout << request << std::endl;
     return header_.fill(this->getHeaderFromRequest_(request)) && body_.fill(this->getBodyFromRequest_(request));
 };
 
-std::string RequestToAPI::getHeaderFromRequest_(const std::string &request)
+nlohmann::json RequestToAPI::getHeaderFromRequest_(const std::string &request)
 {
-    std::string header;
+    nlohmann::json header;
     try
     {
-        nlohmann::json json_request = nlohmann::json::parse(request);
-        header = json_request[request::header::header].dump();
+        auto json_request = nlohmann::json::parse(request);
+        header = json_request[request::header::header];
     }
     catch (const std::exception &e)
     {
@@ -55,13 +53,13 @@ std::string RequestToAPI::getHeaderFromRequest_(const std::string &request)
     return header;
 };
 
-std::string RequestToAPI::getBodyFromRequest_(const std::string &request)
+nlohmann::json RequestToAPI::getBodyFromRequest_(const std::string &request)
 {
-    std::string body;
+    nlohmann::json body;
     try
     {
-        nlohmann::json json_request = nlohmann::json::parse(request);
-        body = json_request[request::body::body].dump();
+        auto json_request = nlohmann::json::parse(request);
+        body = json_request[request::body::body];
     }
     catch (const std::exception &e)
     {
@@ -83,5 +81,5 @@ std::string RequestToAPI::getMethod() const
 
 std::string RequestToAPI::getRequest() const
 {
-    return body_._json_request;
+    return body_._json_request.dump();
 };

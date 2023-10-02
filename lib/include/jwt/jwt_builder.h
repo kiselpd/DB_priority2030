@@ -27,14 +27,14 @@ private:
 class JWTBuilder
 {
 public:
-    JWTBuilder(const jwt::params::param_seq_list_t &list_algo, const std::string &secret);
+    JWTBuilder(const std::vector<std::string> &list_algo, const std::string &secret);
     jwt_token getToken(const JWTPayload &payload) const;
     JWTPayload getPayload(const jwt_token& token_str) const;
 
 private:
-    jwt::params::param_seq_list_t::iterator getRandomAlgo_() const;
+    std::string getRandomAlgo_() const;
 
-    jwt::params::param_seq_list_t list_algo_;
+    std::vector<std::string> list_algo_;
     std::string secret_;
 };
 

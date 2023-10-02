@@ -9,7 +9,7 @@
 
 typedef std::string jwt_token;
 
-const size_t DEFAULT_TIMER_DURATION_IN_SECONDS = 10;
+const size_t DEFAULT_TIMER_DURATION_IN_MINUTES = 3;
 
 class JWTCollection
 {
@@ -32,7 +32,7 @@ private:
 class JWTStatusTimer
 {
 public:
-    JWTStatusTimer(std::shared_ptr<boost::asio::io_service> io_ptr, std::shared_ptr<JWTCollection> collection, const size_t &timer_duration_in_minutes = DEFAULT_TIMER_DURATION_IN_SECONDS);
+    JWTStatusTimer(std::shared_ptr<boost::asio::io_service> io_ptr, std::shared_ptr<JWTCollection> collection, const size_t &timer_duration_in_minutes = DEFAULT_TIMER_DURATION_IN_MINUTES);
 
     void start(const jwt_token &token, const boost::posix_time::ptime &time);
     void stop();

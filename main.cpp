@@ -38,13 +38,5 @@ void run()
 int main()
 {
     run();
-    // DBConnectionOption op;
-    // op._dbname = "priority2030";
-    // op._host = "127.0.0.1";
-    // op._password = "12345";
-    // op._port = "5432";
-    // op._user = "postgres";
-    // std::shared_ptr<DBConnection> conn = std::make_shared<DBConnection>();
-    // conn->connect(op);
     return EXIT_SUCCESS;
 };

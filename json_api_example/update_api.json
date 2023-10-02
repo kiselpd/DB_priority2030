@@ -1,16 +1,14 @@
 {
     "header":
     {
-        "type": "POST",
-        "token": "jwt token",
-        "datestamp": "21.09.2023",
-        "timestamp": "10:04:12"
+        "method": "POST",
+        "token": ""
     },
     "body":
     {
-        "source":"user_data",
-        "target":["login", "password"],
-        "value": ["new_login", "new_password"],
-        "option": "'id'=12"
+        "source":"",
+        "target":["", ""],
+        "value": ["", ""],
+        "option": ""
     }
 }

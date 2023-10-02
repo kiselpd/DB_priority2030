@@ -14,7 +14,7 @@ public:
     size_t readConfig(const std::string &config_name);
 
     std::string getJWTSecret() const;
-    jwt::params::param_seq_list_t getJWTAlgo() const;
+    std::vector<std::string> getJWTAlgo() const;
 
     short getAcceptorPort() const;
 
@@ -26,13 +26,15 @@ private:
     bool readJWTConfig_(const libconfig::Setting& settings);
     bool readAcceptorConfig_(const libconfig::Setting& settings);
 
+    bool readAlgoArray_(const libconfig::Setting& settings);
+
     int acceptor_port_;
 
     unsigned int db_pool_size_;
     DBConnectionOption db_option_;
 
     std::string secret_;
-    jwt::params::param_seq_list_t algo_;
+    std::vector<std::string> algo_;
 };
 class Server
 {

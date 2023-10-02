@@ -57,9 +57,10 @@ std::shared_ptr<BaseAPIAnswer> RequestAPI::doNotAuthenticatedRequest_(const Requ
         if (request_to_db)
         {
             auto result = db_backend_->doRequest(request_to_db);
+
             if (!result.empty())
             {
-                auto token = jwt_manager_->addNewJWT(result[0][1].c_str(), result[0][4].c_str());
+                auto token = jwt_manager_->addNewJWT(result[0][0].c_str(), result[0][4].c_str());
                 answer = std::make_shared<ResultAPIAnswer>(StatusAPICode::OK, token);
             }
             else

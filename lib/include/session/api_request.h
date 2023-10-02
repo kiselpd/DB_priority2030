@@ -2,6 +2,7 @@
 #define API_REQUEST_H
 
 #include <iostream>
+#include "nlohmann/json.hpp"
 
 namespace request
 {
@@ -23,7 +24,7 @@ namespace request
 class RequestHeader
 {
 public:
-    bool fill(const std::string &request_header);
+    bool fill(const nlohmann::json &request_header);
 
     std::string _method;
     std::string _token;
@@ -34,9 +35,9 @@ public:
 class RequestBody
 {
 public:
-    bool fill(const std::string &request_body);
+    bool fill(const nlohmann::json &request_body);
 
-    std::string _json_request;
+    nlohmann::json _json_request;
 };
 
 class RequestToAPI
@@ -49,8 +50,8 @@ public:
     std::string getRequest() const;
 
 private:
-    std::string getHeaderFromRequest_(const std::string &request);
-    std::string getBodyFromRequest_(const std::string &request);
+    nlohmann::json getHeaderFromRequest_(const std::string &request);
+    nlohmann::json getBodyFromRequest_(const std::string &request);
 
     RequestHeader header_;
     RequestBody body_;

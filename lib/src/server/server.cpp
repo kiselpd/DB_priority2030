@@ -26,7 +26,7 @@ std::string ServerOption::getJWTSecret() const
     return this->secret_;
 };
 
-jwt::params::param_seq_list_t ServerOption::getJWTAlgo() const
+std::vector<std::string> ServerOption::getJWTAlgo() const
 {
     return algo_;
 };
@@ -58,13 +58,22 @@ bool ServerOption::readDBConfig_(const libconfig::Setting &settings)
 
 bool ServerOption::readJWTConfig_(const libconfig::Setting &settings)
 {
-    algo_ = {"HS256"};
-    return settings.lookupValue("secret", secret_);
+
+    return settings.lookupValue("secret", secret_) &&
+           (settings.exists("algo") ? (this->readAlgoArray_(settings["algo"])) : (false));
 };
 
 bool ServerOption::readAcceptorConfig_(const libconfig::Setting &settings)
 {
     return settings.lookupValue("port", acceptor_port_);
+};
+
+bool ServerOption::readAlgoArray_(const libconfig::Setting &settings)
+{
+    for (size_t i = 0; i < settings.getLength(); i++)
+        algo_.push_back(settings[i]);
+
+    return !algo_.empty();
 };
 
 // Server

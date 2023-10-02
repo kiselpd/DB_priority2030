@@ -27,7 +27,7 @@ std::pair<std::string, std::string> JWTPayload::getInfo() const
 };
 
 // JWTBuilder
-JWTBuilder::JWTBuilder(const jwt::params::param_seq_list_t &list_algo, const std::string &secret) : list_algo_(list_algo), secret_(secret){};
+JWTBuilder::JWTBuilder(const std::vector<std::string> &list_algo, const std::string &secret) : list_algo_(list_algo), secret_(secret){};
 
 jwt_token JWTBuilder::getToken(const JWTPayload &payload) const
 {
@@ -35,7 +35,7 @@ jwt_token JWTBuilder::getToken(const JWTPayload &payload) const
     try
     {
         jwt::jwt_header header;
-        header.algo(*getRandomAlgo_());
+        header.algo("HS256");
 
         jwt::jwt_object token;
         token.header(header);
@@ -66,8 +66,8 @@ JWTPayload JWTBuilder::getPayload(const jwt_token &token_str) const
     }
 };
 
-jwt::params::param_seq_list_t::iterator JWTBuilder::getRandomAlgo_() const
+std::string JWTBuilder::getRandomAlgo_() const
 {
     std::srand(std::time(nullptr));
-    return list_algo_.begin() + (rand() % list_algo_.size());
+    return list_algo_[(rand() % list_algo_.size())];
 };

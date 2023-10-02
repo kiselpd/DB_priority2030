@@ -2,6 +2,7 @@
 
 #include <nlohmann/json.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/format.hpp>
 
 // SelectAPIBuilder
 SelectAPIBuilder::SelectAPIBuilder(const std::string &id, const std::string &request) : id_(id),
@@ -18,8 +19,10 @@ std::shared_ptr<DBBaseRequest> SelectAPIBuilder::build()
     if (json_request.contains("source"))
         db_request->_source = json_request["source"];
 
+    db_request->_option = "user_id = '" + id_ + "'";
+
     if (json_request.contains("option"))
-        db_request->_option = "user_id = '" + id_ + "' AND " + (std::string)json_request["option"];
+        db_request->_option = " AND " + (std::string)json_request["option"];
 
     if (json_request.contains("limit"))
         db_request->_limit = (size_t)json_request["limit"];
@@ -94,8 +97,10 @@ std::shared_ptr<DBBaseRequest> UpdateAPIBuilder::build()
         db_request->_target = boost::algorithm::join(target_vector, ",");
     }
 
+    db_request->_option = "user_id = '" + id_ + "'";
+
     if (json_request.contains("option"))
-        db_request->_option = "user_id = '" + id_ + "' AND " + (std::string)json_request["option"];
+        db_request->_option = " AND " + (std::string)json_request["option"];
 
     return db_request;
 };
@@ -112,8 +117,10 @@ std::shared_ptr<DBBaseRequest> DeleteAPIBuilder::build()
     if (json_request.contains("source"))
         db_request->_source = json_request["source"];
 
+    db_request->_option = "user_id = '" + id_ + "'";
+
     if (json_request.contains("option"))
-        db_request->_option = "user_id = '" + id_ + "' AND " + (std::string)json_request["option"];
+        db_request->_option = " AND " + (std::string)json_request["option"];
 
     return db_request;
 };
@@ -124,19 +131,16 @@ AuthAPIBuilder::AuthAPIBuilder(const std::string &request) : str_request_(reques
 std::shared_ptr<DBBaseRequest> AuthAPIBuilder::build()
 {
     nlohmann::json json_request = nlohmann::json::parse(str_request_);
+
+    if (!(json_request.contains("username") && json_request.contains("password")))
+        return nullptr;
+
     std::shared_ptr<DBSelectRequest> db_request = std::make_shared<DBSelectRequest>();
 
-    // if (json_request.contains("target"))
-    //     db_request->_target = json_request["target"];
+    db_request->_source = "user_info";
 
-    // if (json_request.contains("source"))
-    //     db_request->_source = json_request["source"];
-
-    // // if (json_request.contains("option"))
-    // //     db_request->_option = "user_id = '" + id_ + "' AND " + (std::string)json_request["option"];
-
-    // // if (json_request.contains("limit"))
-    // //     db_request->_limit = (size_t)json_request["limit"];
+    auto option_format = boost::format("(login='%1%' OR email='%1%') AND password='%2%'") % (std::string)json_request["username"] % (std::string)json_request["password"];
+    db_request->_option = option_format.str();
 
     return db_request;
 };

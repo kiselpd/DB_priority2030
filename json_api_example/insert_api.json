@@ -1,15 +1,13 @@
 {
     "header":
     {
-        "type": "PUT",
-        "token": "jwt token",
-        "datestamp": "21.09.2023",
-        "timestamp": "10:04:12"
+        "method": "PUT",
+        "token": ""
     },
     "body":
     {
-        "source":"user_data",
-        "target":["login", "password"],
-        "value": [["new_login1", "new_password1"], ["new_login2", "new_password2"]]
+        "source":"",
+        "target":["", ""],
+        "value": [["", ""], ["", ""]]
     }
 }

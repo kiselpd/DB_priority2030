@@ -10,7 +10,7 @@
 class JWTAuthenticationManager
 {
 public:
-    JWTAuthenticationManager(std::shared_ptr<boost::asio::io_service> io_ptr, const jwt::params::param_seq_list_t &list_algo, const std::string &secret);
+    JWTAuthenticationManager(std::shared_ptr<boost::asio::io_service> io_ptr, const std::vector<std::string> &list_algo, const std::string &secret);
 
     bool isAuthenticated(const jwt_token &token);
     jwt_token addNewJWT(const std::string &user_id, const std::string &user_role);
