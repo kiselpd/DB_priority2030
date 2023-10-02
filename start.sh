@@ -10,6 +10,7 @@ function build {
 
 function run {
     cd build
+    fuser -k 4000/tcp #TODO
     ./psql_server &
 }
 
@@ -19,8 +20,6 @@ if ! [ -f "$FILE_EXE" ]
 then
     build
 fi
-
-fuser -k 4000/tcp
 
 if [ -f "$FILE_EXE" ]
 then
