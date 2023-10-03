@@ -9,7 +9,7 @@
 
 typedef std::string jwt_token;
 
-const size_t DEFAULT_TIMER_DURATION_IN_MINUTES = 3;
+const size_t DEFAULT_TIMER_DURATION_IN_MINUTES = 10;
 
 class JWTCollection
 {
