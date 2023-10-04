@@ -1,34 +1,29 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
-#include <pqxx/pqxx> 
+#include <pqxx/pqxx>
 
-struct DBConnectionOption
+class DBConnectionOption
 {
-    DBConnectionOption(const std::string& host, const std::string& port,
-        const std::string& user, const std::string& password, const std::string& name);
-
-    DBConnectionOption(){};
-
+public:
     std::string getConnectionInfo() const;
 
     std::string _host;
     std::string _port;
     std::string _user;
     std::string _password;
-    std::string _name;
+    std::string _dbname;
 };
-
 
 class DBConnection
 {
 public:
-    size_t connect(const DBConnectionOption& connection_option);
+    size_t connect(const DBConnectionOption &connection_option);
     size_t disconnect();
 
     std::shared_ptr<pqxx::connection> getConnection();
-    pqxx::result doRequest(const std::string& request);
-    
+    pqxx::result doRequest(const std::string &request);
+
 private:
     std::shared_ptr<pqxx::connection> connection_;
 };

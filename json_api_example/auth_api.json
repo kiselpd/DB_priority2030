@@ -1,0 +1,11 @@
+{
+    "header":
+    {
+        "method": "POST"
+    },
+    "body":
+    {
+        "username": "",
+        "password": ""
+    }
+}
