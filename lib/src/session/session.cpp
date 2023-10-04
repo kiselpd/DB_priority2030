@@ -10,7 +10,7 @@ Buffer::Buffer(const size_t &buffer_size) : size_(buffer_size)
 
 std::vector<char> &Buffer::fill()
 {
-    std::fill(buffer_.begin(), buffer_.end(), 0);
+    std::fill(buffer_.begin(), buffer_.end(), 0);    
     return buffer_;
 };
 

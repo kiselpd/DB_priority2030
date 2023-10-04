@@ -10,7 +10,7 @@ function build {
 
 function run {
     cd build
-    fuser -k 4000/tcp #TODO
+    fuser -k 4000/tcp #NEED FIX
     ./psql_server &
 }
 

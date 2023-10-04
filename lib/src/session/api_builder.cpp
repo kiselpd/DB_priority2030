@@ -22,7 +22,7 @@ std::shared_ptr<DBBaseRequest> SelectAPIBuilder::build()
     db_request->_option = "user_id = '" + id_ + "'";
 
     if (json_request.contains("option"))
-        db_request->_option = " AND " + (std::string)json_request["option"];
+        db_request->_option += " AND " + (std::string)json_request["option"];
 
     if (json_request.contains("limit"))
         db_request->_limit = (size_t)json_request["limit"];
@@ -100,7 +100,7 @@ std::shared_ptr<DBBaseRequest> UpdateAPIBuilder::build()
     db_request->_option = "user_id = '" + id_ + "'";
 
     if (json_request.contains("option"))
-        db_request->_option = " AND " + (std::string)json_request["option"];
+        db_request->_option += " AND " + (std::string)json_request["option"];
 
     return db_request;
 };
@@ -120,7 +120,7 @@ std::shared_ptr<DBBaseRequest> DeleteAPIBuilder::build()
     db_request->_option = "user_id = '" + id_ + "'";
 
     if (json_request.contains("option"))
-        db_request->_option = " AND " + (std::string)json_request["option"];
+        db_request->_option += " AND " + (std::string)json_request["option"];
 
     return db_request;
 };
