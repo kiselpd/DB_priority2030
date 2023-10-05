@@ -10,7 +10,8 @@
 - [Автор](#автор)
 
 ## Технологии
-- Rest API
+- TCP/IP
+- API
 - JWT
 - C++
 - boost 
