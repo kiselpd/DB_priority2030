@@ -54,7 +54,7 @@ application:
 ## Запуск
 Проект собирается и запускается с помощью CMake. Сборка и запуск реализованы в файле ./start.sh
 ```sh
-    chmod -x ./start.sh
+    chmod +x ./start.sh
     ./start.sh
 ```
 
